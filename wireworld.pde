@@ -10,7 +10,7 @@ void setup(){
   fill(255);
   background(0);
   textAlign(CENTER);
-  text("Simple Wireworld simulator\nLeft click / drag with left mouse button to place wire\nRight click / drag with right mouse button to remove wire\nLeft click on wire to turn into electron\nLeft click on electron to turn into wire\nPress 'R' to clear\nPress 'G' to start/stop simulating",400,300);
+  text("Simple Wireworld simulator\nLeft click / drag with left mouse button to place wire\nRight click / drag with right mouse button to remove wire\nLeft click on wire to turn into electron\nLeft click on electron to turn into tail\nLeft click on tail to turn into wire\nPress 'R' to clear\nPress 'G' to start/stop simulating\Press 'R' to clear this message",400,300);
 }
 void restart(){
   grid = new int[50][50];
