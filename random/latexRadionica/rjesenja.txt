@@ -1,0 +1,62 @@
+1.
+
+Da li ste znali da je puno ime popularnog romana \emph{Robinson Crusoe}, engleskog autora \texttt{Daniel Defoe-a} zapravo 'The Life and Strange Surprizing Adventures of \textbf{Robinson Crusoe}, Of York, Mariner: Who lived \underline{Eight and Twenty Years}, all alone in an un-inhabited Island on the Coast of \small{America}, near the Mouth of the Great River of \textit{Oroonoque}; Having been cast on Shore by \textbf{\emph{Shipwreck}}, wherein all the Men perished but \underline{\textbf{himself}}. With An Account how he was at last as strangely deliver'd by \large{\textit{Pyrates}}' ?
+
+2.
+
+\begin{flushright}
+Teorija brojeva je grana matematike koja pretežno proučava svojstva cijelih brojeva. Iznimno, teorija brojeva ponekad proučava i svojstva drugih tipova brojeva, recimo racionalnih, realnih i kompleksnih, ali samo ona njihova svojstva koja u osnovi ovise o svojstvima cijelih brojeva, ili ona njihova svojstva o kojima  ovise  svojstva  cijelih  brojeva. 
+\end{flushright}
+\begin{center}
+All right, but apart from the sanitation, the medicine, education, wine, public order, irrigation, roads, the fresh-water system, and public health, what have the Romans ever done for us?
+\end{center}
+
+
+\begin{itemize}
+\item RI
+\begin{enumerate}
+\item MLTI
+\item DM
+\item DPS
+\end{enumerate}
+\item AiE
+\begin{description}
+\item[Prva godina] IM2
+\item[Druga godina] LSAU
+\item[Treća godina] DSU
+\end{description}
+\end{itemize}
+
+3.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3cm, height=3cm]{img/linux.jpg}
+\caption{Pingvin Tux je maskota Linux organizacije}
+\end{figure}
+
+4.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{||l|c|r||}
+\hline
+Ime & Kuća & Mjesto \\ \hline \hline
+Tyrion & Lannister & King's Landing \\ \hline
+Ramsay & Bolton & Dreadfort \\ \hline 
+Ned & Stark & Winterfell \\ \hline
+\end{tabular}
+\end{table}
+
+5.
+
+$$ax^2 + bx + c = 0$$ \vspace{0.2cm}
+$$\frac{-b + \sqrt{b^2 - 4ac}}{2a}$$\vspace{0.2cm}
+$$ p = \prod_{k = 0}^{n} \frac{(-1)^k}{k!} $$\vspace{0.2cm}
+$$ A \Rightarrow B \Leftarrow C$$\vspace{0.2cm}
+$$ Y(z) = \frac{\sum_{i = 0}^{N}a_{N-1} \sum_{j = 0}^{i - 1}y_j z^{i-j}}{\sum_{i = 0}^{N} a_{N-i}z^i}$$
+
+
+
+
