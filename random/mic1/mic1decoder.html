@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>Simple MIC-1 microinstruction decoder</title>
+</head>
+<body>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.caption {text-align:center}
+input{width: 500px; text-align:center}
+#warning {color:red}
+</style>
+<script type="text/javascript" src="decode.js"></script>
+<h1 class="caption"> Simple MIC-1 microinstruction decoder </h1>
+<h2 class="caption", id="warning">Attention, all ye who enter here!</h2> 
+<p class="caption"> This decoder decodes all MIC-1 microinstructions entered in the binary format given bellow. <b>However, it will also try to decode invalid MIC-1 microinstructions, so beware!</b></p>
+<p class="caption"> Simply enter the 32-bit binary string in the field below, and click on "Decode" to get your MIC-1 microinstruction. The decoder has been tested, but please be aware that errors are still possible!</p>
+<br><br>
+<div id="submitdiv" align = "center" target="#">
+<form id="submitForm"> 
+Enter microinstruction as 32-bit binary number:<br><br>
+<input type="text" name="instr" id="textbox", width:800px><br><br>
+<input type="button" name="decode", value="Decode" onclick="decodefun(event)">
+</form>
+</div>
+
+<table class="tg" align = "center">
+  <tr>
+    <th class="tg-amwm">AMUX</th>
+    <th class="tg-amwm">COND</th>
+    <th class="tg-amwm">ALU</th>
+    <th class="tg-amwm">SH</th>
+    <th class="tg-amwm">MBR</th>
+    <th class="tg-amwm">MAR</th>
+    <th class="tg-amwm">RD</th>
+    <th class="tg-amwm">WR</th>
+    <th class="tg-amwm">ENC</th>
+    <th class="tg-amwm">C</th>
+    <th class="tg-amwm">B</th>
+    <th class="tg-amwm">A</th>
+    <th class="tg-amwm">ADDRESS</th>
+  </tr>
+  <tr>
+    <td class="tg-baqh", id="amux"></td>
+    <td class="tg-baqh", id="cond"></td>
+    <td class="tg-baqh", id="alu"></td>
+    <td class="tg-baqh", id="sh"></td>
+    <td class="tg-baqh", id="mbr"></td>
+    <td class="tg-baqh", id="mar"></td>
+    <td class="tg-baqh", id="rd"></td>
+    <td class="tg-baqh", id="wr"></td>
+    <td class="tg-baqh", id="enc"></td>
+    <td class="tg-baqh", id="c"></td>
+    <td class="tg-baqh", id="b"></td>
+    <td class="tg-baqh", id="a"></td>
+    <td class="tg-baqh", id="addr"></td>
+  </tr>
+</table>
+<p class="caption"> Decoded microinstruction: </p>
+<div id="resultdiv", align = "center"
+<form id="resultForm">
+<input type="text", id="result", readonly>
+</form>
+<hr>
+<center>
+<a href="https://eteskeredzic.github.io">Back to main page</a>
+</center>
+</body>
+
+</html>
