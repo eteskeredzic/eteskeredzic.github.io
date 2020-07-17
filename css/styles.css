@@ -75,13 +75,7 @@ hr {
 	.project-image {
 		display: none
 	}
-	.project-info {
-		position: relative;
-		margin: 0;
-		padding: 30px 15px;
-		top: auto;
-		transform: none
-	}
+
 	footer {
 		text-align: center
 	}
