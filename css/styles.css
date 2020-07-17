@@ -69,20 +69,11 @@ hr {
         margin-bottom: 0;
         width: calc(100% / 3 - .5rem);
     }
-}
-
-@media screen and (max-width: 768px) {
-	.project-image {
+    	.project-image {
 		display: none
 	}
-
-	footer {
-		text-align: center
-	}
-	.social {
-		text-align: center
-	}
 }
+
 
 /*------------------------------------*\
     #SECTION
