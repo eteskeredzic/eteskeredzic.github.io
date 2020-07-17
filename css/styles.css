@@ -70,7 +70,8 @@ hr {
         width: calc(100% / 3 - .5rem);
     }
     	.project-image {
-		display: none
+		display: none !important;
+
 	}
 }
 
