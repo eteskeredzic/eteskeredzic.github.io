@@ -71,7 +71,7 @@ hr {
     }
 }
 
-@media only screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
 	.project-image {
 		display: none
 	}
