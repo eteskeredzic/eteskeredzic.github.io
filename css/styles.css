@@ -71,6 +71,25 @@ hr {
     }
 }
 
+@media only screen and (max-width: 768px) {
+	.project-image {
+		display: none
+	}
+	.project-info {
+		position: relative;
+		margin: 0;
+		padding: 30px 15px;
+		top: auto;
+		transform: none
+	}
+	footer {
+		text-align: center
+	}
+	.social {
+		text-align: center
+	}
+}
+
 /*------------------------------------*\
     #SECTION
 \*------------------------------------*/
