@@ -69,10 +69,7 @@ hr {
         margin-bottom: 0;
         width: calc(100% / 3 - .5rem);
     }
-    	.project-image {
-		visibility: hidden;
 
-	}
 }
 
 
