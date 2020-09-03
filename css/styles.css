@@ -70,6 +70,7 @@ hr {
         width: calc(100% / 3 - .5rem);
     }
 
+
 }
 
 
@@ -127,6 +128,10 @@ hr {
         width: 7rem;
         height: 7rem;
         transform: translate(-50%, -4rem);
+    }
+
+    main {
+        display:none;
     }
 }
 
