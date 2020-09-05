@@ -100,6 +100,13 @@ hr {
     text-align: center;
 }
 
+.section__titleProject {
+    color: #7728ac;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
 .section__subtitle {
     font-size: 1.25rem;
     color: #0a0a0a;
@@ -145,6 +152,9 @@ hr {
         display:none;
     }
     .sectionProject {
+        display:none;
+    }
+    .section__titleProject {
         display:none;
     }
 }
