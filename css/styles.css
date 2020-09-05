@@ -130,26 +130,9 @@ hr {
         transform: translate(-50%, -4rem);
     }
 
-    .project-image {
+    .container_project {
         display:none;
     }
-
-
-    .project-info {
-        position: absolute;
-        display: inline-block;
-
-    }
-    
-    .project-info h3 {
-        color: #3232aa;
-        text-align: center;
-    }
-    
-    .project-info p {
-        text-align: center;
-    }
-
 }
 
 .header-avatar__pic {
