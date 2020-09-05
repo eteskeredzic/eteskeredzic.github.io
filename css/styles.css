@@ -156,6 +156,7 @@ hr {
     }
     .section__titleProject {
         display:none;
+        font-size: 0px;
     }
 }
 
