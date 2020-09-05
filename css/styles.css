@@ -133,6 +133,23 @@ hr {
     .project-image {
         display:none;
     }
+
+
+    .project-info {
+        position: absolute;
+        top: 50%;
+
+    }
+    
+    .project-info h3 {
+        color: #3232aa;
+        text-align: center;
+    }
+    
+    .project-info p {
+        text-align: center;
+    }
+
 }
 
 .header-avatar__pic {
