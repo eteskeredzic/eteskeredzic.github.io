@@ -137,7 +137,7 @@ hr {
 
     .project-info {
         position: absolute;
-
+        display: inline-block;
 
     }
     
