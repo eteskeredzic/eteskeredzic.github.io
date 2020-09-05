@@ -133,6 +133,9 @@ hr {
     .container_project {
         display:none;
     }
+    #projects_section {
+        display:none;
+    }
 }
 
 .header-avatar__pic {
