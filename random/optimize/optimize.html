@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>Some tricks</title>
+<body>
+<h1 align=center> C/C++ Optimizations </h1>
+
+<ol>
+<li style="font-weight: bold;">
+Always avoid jumps and branches;<br><br>
+</li>
+<ul>
+<li>
+If possible, use switch/case whenever applicable. The compiler will (sometimes) optimize it to a lookup table. If you are forced to use if/else statements, put the most common ones first;
+</li>
+<li>
+When calling a function, two jumps are performed;
+</li>
+<li>
+Iteration is always better than recursion;
+</li>
+<li>
+Never write short functions, either write the code directly, or use inline functions;
+</li>
+<li>
+Avoid calling functions inside loops. Instead, call loops inside of functions.<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Consider how arrays are stored in memory;<br><br>
+</li>
+<ul>
+<li>
+N-dimensional (N > 1) arrays  are always stored as 1D arrays in memory;
+</li>
+<li>
+When accessing data, try to do it sequentially (simulate the way it is stored in memory);
+</li>
+<li>
+Data is always fetched into cache in blocks. That means that, if you accessed arr[i][j], then arr[i][j+1] is probably already cached - you do not have the same guarantee for arr[i+1][j].<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Avoid local variables;<br><br>
+</li>
+<ul>
+<li>
+If your function only has a few local variables, the compiler can optimize those to be stored on the stack.<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Use shifting instead of multiplication and division;<br><br>
+</li>
+
+<ul>
+<li>
+Shifting left by N bits gives the same result as multiplying by 2^N;
+</li>
+<li>
+Shifting right by N bits gives the same result as dividing by 2^N.<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Consider using table lookups if doing GPU or FPGA Programming;<br><br>
+</li>
+
+<li style="font-weight: bold;">
+Be mindful of the operators you use;<br><br>
+</li>
+
+<ul>
+<li>
+For simple data types, always use +, -, *, / instead of +=, -=, *=, and /=;
+</li>
+<li>
+For objects, the oposite is true.<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Whenever you can, use prefix operators (++x and --x) instead of postfix operators (x++ and x--);<br><br>
+</li>
+
+<li style="font-weight: bold;">
+Try to simplify your math;<br><br>
+</li>
+<ul>
+<li>
+For example, if you have to divide by x many times, consider calculating y = 1/x first, and then doing multiplications by y instead of divisions by x;
+</li>
+<li>
+Avoid mathematical functions if you don't need them. Checking if a > b gives the same resul as checking if sqrt(a) > sqrt(b) - for most use cases, at least;<br><br>
+</li>
+</ul>
+
+<li style="font-weight: bold;">
+Some stuff specific to code:<br><br>
+</li>
+
+<ul>
+<li>
+If you're working in C++, consider running std::ios::sync_with_stdio(false); - this makes the cin and cout operations preform much faster;
+</li>
+<li>
+Most compilers will optimize zero assingment (i.e. x = 0) to self-XORing (i.e. x ^= x). However, some won't, so considering doing the XORing yourself;
+</li>
+<li>
+If the direction of a loop does not matter, consider replacing for(i = 0; i < n; ++i) with for(i = n; --i);
+</li>
+<li>
+Printf and scanf are faster than cout and cin.
+</li>
+</ul>
+
+
+</ol>
+
+<h1 align=center> Fun with bits </h1>
+
+
+To be added. . . 
+
+
+<center>
+<hr>
+<a href="https://eteskeredzic.github.io">Back to main page</a>
+</center>
+</body>
+
+</html>
