@@ -29,10 +29,25 @@ hr {
     overflow-wrap: break-word;
 }
 
-.centered {
-
+strong {
+    color:#7728ac;
 }
 
+.contactway:hover {
+    color:#007bff;
+}
+
+.link {
+    color:#007bff;
+}
+
+.contactlink:hover {
+    text-decoration: none;
+}
+
+.goup:hover i {
+    color:#7728ac;
+}
 
 
 /*------------------------------------*\
@@ -492,9 +507,6 @@ hr {
 }
 
 
-.shadow-large{
-
-}
 
 
 
@@ -550,3 +562,4 @@ hr {
     color: #7728ac;
     font-size: 1.3em;
 }
+
