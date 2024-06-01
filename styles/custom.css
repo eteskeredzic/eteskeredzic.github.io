@@ -1,3 +1,12 @@
+/* Use smaller sizes on mobile devices. */
+/* Media query for screens less than 600px wide */
+@media screen and (max-width: 600px) {
+html {
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+}
+
 .title-link {
   text-decoration: none;
 }
@@ -41,6 +50,10 @@ button:hover {
 
 .display-flex {
   display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .pill {
