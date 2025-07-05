@@ -162,7 +162,7 @@ a {
 /* Make string a little more bold, to adjust for the font. */
 b,
 strong {
-    font-weight: 600;
+    font-weight: 600 !important;
 }
 
 /* Make emphasized text a little larger, to adjust for the font. */
@@ -631,7 +631,7 @@ blockquote footer cite {
     4) Add a top and bottom border line.
 */
 pre:has(code) {
-    padding: 1rem 1.6rem; /* 1 */
+ 
     margin: 1.6rem 0; /* 1 */
     overflow-y: hidden; /* 2 */
     font-family: "Courier Prime", monospace; /* 3 */
@@ -726,8 +726,9 @@ aside h1, aside h2, aside h3, aside h4 {
 /* Use a custom font for the sidenote numbers */
 .sidenote-anchor:after,
 .sidenote:before {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     position: relative;
+    font-weight: 600;
     font-family: "Spectral", serif;
 }
 
