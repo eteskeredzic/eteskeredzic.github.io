@@ -1,7 +1,7 @@
 /* Use smaller sizes on mobile devices. */
 /* Media query for screens less than 600px wide */
 @media screen and (max-width: 600px) {
-html {
+  html {
     margin-left: 1%;
     margin-right: 1%;
   }
@@ -82,4 +82,74 @@ button:hover {
 
 .pad {
   padding-bottom: 1rem;
+}
+
+.rounded {
+  border-radius: 12px;
+}
+
+.white-border {
+  border: 1px solid white;
+}
+
+a.article-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+section.article-card {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 16px;
+  margin: 20px auto;
+}
+
+
+.article-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.article-content {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+}
+
+.article-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.share {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #FFFFFF;
+  transition: transform 0.2s ease;
+}
+
+.share-button:hover {
+  transform: scale(1.2);
+}
+
+.share-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
