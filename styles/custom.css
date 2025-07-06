@@ -164,3 +164,7 @@ section.article-card {
   height: 24px;
   fill: currentColor;
 }
+
+.break-all {
+  word-break: break-all;
+}
