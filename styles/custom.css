@@ -180,3 +180,7 @@ section.article-card {
 .break-all {
   word-break: break-all;
 }
+
+li {
+  margin-bottom: 0.6rem;
+}
