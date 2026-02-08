@@ -268,10 +268,12 @@
 <p>For a long time, one of my favorite hobbies was gaming, and one of my favorite games was DotA 2. According to Steam, I&rsquo;ve spent thousands of hours playing it - and whether alone or with friends, I always had a blast!</p>
 <p>The premise of the game is deceptively simple: Two teams of 5 players, each controlling a hero, need to defend their base (so-called Ancient), while at the same time trying to destroy the enemy base. That&rsquo;s the basic idea - you now understand the game. But, given over a hundred heroes, items, play-styles, etc., DotA is actually extremely complex, and virtually no two games are the same. It&rsquo;s easy to understand, but hard to master - kinda like chess.</p>
 <p>On the topic of chess, I have recently watched a great video titled <em>The rarest move in chess</em> 
+
+
 <a href="#ref-0" class="sidenote-number sidenote-number-mobile" aria-label="Reference 0"></a>
 <a href="#sn-0" class="sidenote-number sidenote-number-desktop" aria-label="Reference 0"></a>
-<span class="sidenote" id="sn-0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess (video by Paralogical)</a></span>
-<span class="sidenote-reference" id="ref-0" data-ref="0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess (video by Paralogical)</a></span>
+<span class="sidenote" id="sn-0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc" target="_blank" rel="noopener noreferrer">The rarest move in chess (video by Paralogical)</a></span>
+<span class="sidenote-reference" id="ref-0" data-ref="0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc" target="_blank" rel="noopener noreferrer">The rarest move in chess (video by Paralogical)</a></span>
 . It&rsquo;s a fascinating exploration of chess games documented online. So, if we can ask <em>What is the rarest move in chess?</em>, then naturally&hellip;</p>
 <blockquote class="centered-quote">
   What is the rarest game of DotA 2?
@@ -287,26 +289,34 @@
 <p>I&rsquo;ll look into these two points in more detail.</p>
 <h3 id="getting-game-data">Getting game data<a hidden class="anchor" aria-hidden="true" href="#getting-game-data">#</a></h3>
 <p>Fortunately, there&rsquo;s a great project called OpenDota
+
+
 <a href="#ref-2" class="sidenote-number sidenote-number-mobile" aria-label="Reference 2"></a>
 <a href="#sn-2" class="sidenote-number sidenote-number-desktop" aria-label="Reference 2"></a>
-<span class="sidenote" id="sn-2"><a href="https://www.opendota.com/">OpenDota project</a></span>
-<span class="sidenote-reference" id="ref-2" data-ref="2"><a href="https://www.opendota.com/">OpenDota project</a></span>
+<span class="sidenote" id="sn-2"><a href="https://www.opendota.com/" target="_blank" rel="noopener noreferrer">OpenDota project</a></span>
+<span class="sidenote-reference" id="ref-2" data-ref="2"><a href="https://www.opendota.com/" target="_blank" rel="noopener noreferrer">OpenDota project</a></span>
 , which provides open-source data on DotA 2 matches. The folks maintaining the project have released two comprehensive data dumps: one from 2015
+
+
 <a href="#ref-3" class="sidenote-number sidenote-number-mobile" aria-label="Reference 3"></a>
 <a href="#sn-3" class="sidenote-number sidenote-number-desktop" aria-label="Reference 3"></a>
-<span class="sidenote" id="sn-3"><a href="https://blog.opendota.com/2015/12/20/datadump/">December 2015 Data Dump</a></span>
-<span class="sidenote-reference" id="ref-3" data-ref="3"><a href="https://blog.opendota.com/2015/12/20/datadump/">December 2015 Data Dump</a></span>
+<span class="sidenote" id="sn-3"><a href="https://blog.opendota.com/2015/12/20/datadump/" target="_blank" rel="noopener noreferrer">December 2015 Data Dump</a></span>
+<span class="sidenote-reference" id="ref-3" data-ref="3"><a href="https://blog.opendota.com/2015/12/20/datadump/" target="_blank" rel="noopener noreferrer">December 2015 Data Dump</a></span>
 , containing 3.5 million matches, and another one from 2017
+
+
 <a href="#ref-4" class="sidenote-number sidenote-number-mobile" aria-label="Reference 4"></a>
 <a href="#sn-4" class="sidenote-number sidenote-number-desktop" aria-label="Reference 4"></a>
-<span class="sidenote" id="sn-4"><a href="https://blog.opendota.com/2017/03/24/datadump2/">Data Dump (March 2011 to March 2016)</a></span>
-<span class="sidenote-reference" id="ref-4" data-ref="4"><a href="https://blog.opendota.com/2017/03/24/datadump2/">Data Dump (March 2011 to March 2016)</a></span>
+<span class="sidenote" id="sn-4"><a href="https://blog.opendota.com/2017/03/24/datadump2/" target="_blank" rel="noopener noreferrer">Data Dump (March 2011 to March 2016)</a></span>
+<span class="sidenote-reference" id="ref-4" data-ref="4"><a href="https://blog.opendota.com/2017/03/24/datadump2/" target="_blank" rel="noopener noreferrer">Data Dump (March 2011 to March 2016)</a></span>
 , with over a billion matches.</p>
 <p>The bigger dataset is not available (the data is no longer being seeded via torrents), so the smaller one will have to do (at least for now). It&rsquo;s available as a gzipped JSON file (~100 GB). The structure of this JSON file is described on the OpenDota Github page
+
+
 <a href="#ref-5" class="sidenote-number sidenote-number-mobile" aria-label="Reference 5"></a>
 <a href="#sn-5" class="sidenote-number sidenote-number-desktop" aria-label="Reference 5"></a>
-<span class="sidenote" id="sn-5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump">OpenDota GitHub Repository - JSON Data Dump description</a></span>
-<span class="sidenote-reference" id="ref-5" data-ref="5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump">OpenDota GitHub Repository - JSON Data Dump description</a></span>
+<span class="sidenote" id="sn-5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump" target="_blank" rel="noopener noreferrer">OpenDota GitHub Repository - JSON Data Dump description</a></span>
+<span class="sidenote-reference" id="ref-5" data-ref="5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump" target="_blank" rel="noopener noreferrer">OpenDota GitHub Repository - JSON Data Dump description</a></span>
 .</p>
 <p>After downloading the data dump, I used Python to parse through the data in a streaming fashion (you really want to stream data for datasets this big - have you seen these RAM prices?). The only relevant information for this little experiment are the hero drafts, so I&rsquo;ve disregarded all other data. What I ended up with was a NDJSON file containing 3 566 804 drafts.</p>
 <p>Here&rsquo;s the script that handles the streaming+parsing of the data (for brevity, error handling has been omitted). The following code reads the JSON, and outputs the relevant draft data for every match, in NDJSON format:</p>
