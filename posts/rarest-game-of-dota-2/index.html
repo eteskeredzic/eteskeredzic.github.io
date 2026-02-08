@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>What is the rarest game of DotA2? | Edvin Teskeredzic</title>
+<meta name="keywords" content="tech, dota 2, combinatorics, data analysis, gaming, python, mathematics">
+<meta name="description" content="A combinatorics problem hiding inside 3.5 million matches.">
+<meta name="author" content="Edvin Teskeredzic">
+<link rel="canonical" href="https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.80e834a110fa68d9aa57fdf6a4ace48d1a7be1f702bf8198a2830ae314b58ef9.css" integrity="sha256-gOg0oRD6aNmqV/32pKzkjRp74fcCv4GYooMK4xS1jvk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://eteskeredzic.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://eteskeredzic.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      inlineMath: [['\\(', '\\)'], ['$', '$']]
+    }
+  };
+</script>
+<meta property="og:url" content="https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/">
+  <meta property="og:site_name" content="Edvin Teskeredzic">
+  <meta property="og:title" content="What is the rarest game of DotA2?">
+  <meta property="og:description" content="A combinatorics problem hiding inside 3.5 million matches.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-01-28T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-01-28T00:00:00+00:00">
+    <meta property="article:tag" content="Tech">
+    <meta property="article:tag" content="Dota 2">
+    <meta property="article:tag" content="Combinatorics">
+    <meta property="article:tag" content="Data Analysis">
+    <meta property="article:tag" content="Gaming">
+    <meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="What is the rarest game of DotA2?">
+<meta name="twitter:description" content="A combinatorics problem hiding inside 3.5 million matches.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "posts",
+      "item": "https://eteskeredzic.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "What is the rarest game of DotA2?",
+      "item": "https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "What is the rarest game of DotA2?",
+  "name": "What is the rarest game of DotA2?",
+  "description": "A combinatorics problem hiding inside 3.5 million matches.",
+  "keywords": [
+    "tech", "dota 2", "combinatorics", "data analysis", "gaming", "python", "mathematics"
+  ],
+  "articleBody": "\nFor a long time, one of my favorite hobbies was gaming, and one of my favorite games was DotA 2. According to Steam, I’ve spent thousands of hours playing it - and whether alone or with friends, I always had a blast!\nThe premise of the game is deceptively simple: Two teams of 5 players, each controlling a hero, need to defend their base (so-called Ancient), while at the same time trying to destroy the enemy base. That’s the basic idea - you now understand the game. But, given over a hundred heroes, items, play-styles, etc., DotA is actually extremely complex, and virtually no two games are the same. It’s easy to understand, but hard to master - kinda like chess.\nOn the topic of chess, I have recently watched a great video titled The rarest move in chess The rarest move in chess (video by Paralogical)\rThe rarest move in chess (video by Paralogical)\r. It’s a fascinating exploration of chess games documented online. So, if we can ask What is the rarest move in chess?, then naturally…\nWhat is the rarest game of DotA 2?\rSince this question cannot be answered without both combinatorics AND programming, I decided to find out!\nA game of infinite variety There are some caveats to this question, namely:\nWe can only analyze games that have been documented online. To do that, I’ll need a dataset of DotA 2 matches - the larger the better. A game of DotA 2 has many parameters - hero picks, item builds, player positions, etc. In order to keep things manageable, I will only consider hero picks. This means that two games are the same if the same heroes have been picked by the same teams (so side/team matters!). In addition, the sides in DotA are not symmetrical, so I’m treating drafts where some (or all) heroes are swapped between sides as different drafts. I’ll look into these two points in more detail.\nGetting game data Fortunately, there’s a great project called OpenDota\rOpenDota project\rOpenDota project\r, which provides open-source data on DotA 2 matches. The folks maintaining the project have released two comprehensive data dumps: one from 2015\rDecember 2015 Data Dump\rDecember 2015 Data Dump\r, containing 3.5 million matches, and another one from 2017\rData Dump (March 2011 to March 2016)\rData Dump (March 2011 to March 2016)\r, with over a billion matches.\nThe bigger dataset is not available (the data is no longer being seeded via torrents), so the smaller one will have to do (at least for now). It’s available as a gzipped JSON file (~100 GB). The structure of this JSON file is described on the OpenDota Github page\rOpenDota GitHub Repository - JSON Data Dump description\rOpenDota GitHub Repository - JSON Data Dump description\r.\nAfter downloading the data dump, I used Python to parse through the data in a streaming fashion (you really want to stream data for datasets this big - have you seen these RAM prices?). The only relevant information for this little experiment are the hero drafts, so I’ve disregarded all other data. What I ended up with was a NDJSON file containing 3 566 804 drafts.\nHere’s the script that handles the streaming+parsing of the data (for brevity, error handling has been omitted). The following code reads the JSON, and outputs the relevant draft data for every match, in NDJSON format:\n#!/usr/bin/env python3 import sys import json import ijson from tqdm import tqdm def main() -\u003e None: \"\"\" Streams through JSON array; outputs relevant match data as NDJSON. Data to output for every match: - match_id - game_mode - players: list of dicts with hero_id and player_slot \"\"\" items = ijson.items(sys.stdin, \"item\") for m in tqdm(items, unit=\"matches\", mininterval=25.0): match_id = m.get(\"match_id\") game_mode = m.get(\"game_mode\") players = m.get(\"players\") or [] out_players = [] for p in players: hero_id = p.get(\"hero_id\") player_slot = p.get(\"player_slot\") out_players.append( { \"hero_id\": hero_id, \"player_slot\": player_slot, } ) out = { \"match_id\": match_id, \"game_mode\": game_mode, \"players\": out_players, } sys.stdout.write(json.dumps(out, separators=(\",\", \":\"))+\"\\n\") if __name__ == \"__main__\": main() # invoke script with: # gzcat yasp-dump.json.gz | python3 main.py \u003e matches.ndjson Now I have an NDJSON file (around 1.32 GB) containing the drafts. For every match, I have the match ID, game mode, and the hero picks for both teams (player team is indicated by player_slot).\nNote: While this dataset is great, it does have one glaring issue - 3.5 million matches is relatively small compared to the actual number of DotA 2 games played since the game’s release (8.6 billion). Many drafts that have been played in the wild are most likely not included in this dataset. However, as we’ll see later, even with a hypothetical perfect dataset, we have not even scratched the surface of all possible drafts. Before looking at this data though, there’s a fundamental question that needs to be answered: How many different drafts are even possible?\nA brief detour into combinatorics I’m only looking into hero picks, so I can calculate the number of possible hero drafts for each team. In a standard game, the teams (Dire and Radiant) each pick 5 heroes from a pool of heroes. The order does not matter, and a hero can only be picked once.\nIn combinatorics, the number of ways to choose k elements from a set of n elements is given by the binomial coefficient, often read as “n choose k”. The formula is quite simple:\n$${n \\choose k} = \\frac{n!}{k! * (n - k)!}$$\rSince our dataset is from December of 2015, the hero pool (n) consists of 111 heroes. So the number of possible 10-hero drafts is: $${111 \\choose 10} = 51\\ 540\\ 966\\ 982\\ 791$$\r…or 51 trillion 540 billion 966 million 982 thousand 791 possible drafts! But hold up - that’s just the number of ways to pick 10 heroes. This calculation does not take into account which team picked which heroes. So, our actual formula is:\n$${111 \\choose 5} * {106 \\choose 5} = 12\\ 988\\ 323\\ 679\\ 663\\ 332$$\r…or…\r12 quadrillion 988 trillion 323 billion 679 million 663 thousand 332 possible drafts!\rThat number is just absurdly large. To put things into perspective, if we started 100 games of DotA 2 every second, we would need a little over 4.1 million years in order to play through every possible draft. Furthermore, with every new hero added to the game, this number grows larger - not linearly, but combinatorially!\nAnother way to grasp this number is to compare it to the actual amount of DotA 2 games played. As of writing this article, there have been approximately 8.6 billion matches played (this number also includes silly game modes like ability draft). DotA 2 released in 2013, so with this amount of games in 13 years, we will need another 20 million years before we reach this number!\nThis is great news! Since only a tiny fraction of all possible drafts has been played, there must be drafts that have never (and will never) be played. Which implies a rarest game of DotA 2 exists!\nFinding the rarest game The data is ready, and I know for certain that not all possible drafts have been played. I can now find the rarest game of DotA 2!\nSince the data has been nicely parsed, this is not that hard. I’ve written a simple Python script that streams through our NDJSON, and counts the occurences of each draft, using the neat built-in Counter class that Python offers. I expect the number of unique drafts to be far smaller than 3.5 million - this fits neatly into memory - for larger datasets, solutions like DuckDB or SQLite can help.\nFirst, I extract the drafts from the dataset, returning them as two tuples of 5 elements each (the hero IDs - which are constant over time and never change) - the tuples have been sorted, so the ordering inside a specific team does not matter.\nThe following function handles the described draft extraction:\ndef extract_draft(match: dict) -\u003e tuple[tuple[int, ...], tuple[int, ...]] | None: \"\"\" Return the draft of a match as two sorted tuples (Radiant, Dire). If the match does not have a complete 5v5 draft, return None. Radiant is identified by player_slot 0-4, Dire by 128-132. \"\"\" players: list[dict] = match.get(\"players\", []) radiant_heroes = [] dire_heroes = [] for player in players: hero_id = player.get(\"hero_id\") slot = player.get(\"player_slot\", 0) if hero_id is None or hero_id == 0: continue # Slots 0-4 are Radiant, 128-132 are Dire if slot \u003c 128: radiant_heroes.append(hero_id) else: dire_heroes.append(hero_id) # Only return complete 5v5 drafts if len(radiant_heroes) == 5 and len(dire_heroes) == 5: return ( tuple(sorted(radiant_heroes)), tuple(sorted(dire_heroes)), ) return None The two tuples (well, tuple of tuples) can now be used as the key for the Counter. Let’s open the NDJSON file, stream it line by line (that’s the beauty of NDJSON), extract the draft, and just attach it to our counter. Also, the code keeps track of the match ID, so that I can access the specific matches of interest later on.\nI wrote a function that does just that:\ndef parse_matches(filepath: Path,) -\u003e tuple[Counter, dict]: \"\"\" Parses the NDJSON file line-by-line, and counts the occurences of each draft. Returns a Counter of drafts and a dict mapping drafts to match IDs. \"\"\" draft_counter: Counter[tuple] = Counter() draft_match_ids: dict[tuple, int] = {} with open(filepath, \"r\", encoding=\"utf-8\") as f: for line in f: line = line.strip() match: dict = json.loads(line) draft = extract_draft(match) if draft is not None: draft_counter[draft] += 1 if draft not in draft_match_ids: draft_match_ids[draft] = match.get(\"match_id\", 0) return draft_counter, draft_match_ids After some additional code to parse the results, we have our answer:\nThe rarest draft in our dataset has been played only once and it is…drumroll please… 🥁🥁🥁\r…actually, there’s a whole bunch of them. This should not be surprising for those who have followed along on the combinatorics part. The number of possible drafts is practically infinitely larger than what is available in the dataset. In fact, out of 3.5 million matches, 3 550 920 of them have drafts that occur only once in the dataset (which is around 99.6%).\nHere’s one of the drafts that has been played only once:\nThis match has the ID 2001385642, and you can actually check it out on Dotabuff: https://www.dotabuff.com/matches/2001385642\nConsidering the draft, it’s no wonder that Dire stomped this game after only 28 minutes of playtime.\nHere’s the same stats, for two game modes specifically: All Pick and Ranked Competitive. I’ve also included the most common draft:\nGame Mode Valid 5v5 drafts Unique drafts Drafts appearing exactly once Most common draft (occurences) All Pick 1 525 451 1 525 357 1 525 326 31 Ranked 1 547 377 1 547 375 1 547 373 2 The most common draft in All Pick consists of the following lineup:\nRadiant: Enigma, Beastmaster, Luna, Nature’s Prophet, Huskar Dire: Morphling, Weaver, Keeper of the Light, Io, Medusa For Ranked Competitive, the most common draft is (and I’m really glad to see my GOAT Pugna here):\nRadiant: Zeus, Warlock, Silencer, Troll Warlord, Bristleback Dire: Axe, Sniper, Pugna, Omniknight, Undying Future work This was a fun excuse for me to talk about combinatorics! However, there’s a lot more that can be done here:\nAnalyze the larger dataset (\u003e1 billion matches) if it becomes available again - if someone from OpenDota reads this, please reach out! Extract more fun insights from the dataset - what end-game item has been bought the most times? How many times has poor Roshan died? Longest game? Game with most kills? Player with highest cummulative stun duration? You get the idea. Visualize the distribution of draft frequencies: How many drafts have been played once, twice, etc.? Conclusion Games like DotA 2 can be played for thousands of hours, not because they are random, but because of the mind-bogglingly large universe of possible games, so huge that even playing billions of matches barely explore it.\nRealistically, because of things like win rates, meta-game, etc., you will see the same drafts multiple times when playing. However, even if you started playing now and kept at it all the way until the heat death of the Universe, you will never play every game.\nSo, what is the rarest game of DotA 2? Well, there are trillions, and they are waiting for you to play them!\rReferences\r",
+  "wordCount" : "2059",
+  "inLanguage": "en",
+  "datePublished": "2026-01-28T00:00:00Z",
+  "dateModified": "2026-01-28T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Edvin Teskeredzic"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Edvin Teskeredzic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eteskeredzic.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://eteskeredzic.github.io/" accesskey="h" title="Edvin Teskeredzic (Alt + H)">Edvin Teskeredzic</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://eteskeredzic.github.io/whoami/" title="whoami">
+                    <span>whoami</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/contact/" title="contact">
+                    <span>contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/archives/" title="archives">
+                    <span>archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://eteskeredzic.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://eteskeredzic.github.io/posts/">posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      What is the rarest game of DotA2?
+    </h1>
+    <div class="post-description">
+      A combinatorics problem hiding inside 3.5 million matches.
+    </div>
+    <div class="post-meta"><span title='2026-01-28 00:00:00 +0000 UTC'>January 28, 2026</span>&nbsp;·&nbsp;<span>10 min</span>&nbsp;·&nbsp;<span>2059 words</span>&nbsp;·&nbsp;<span>Edvin Teskeredzic</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#a-game-of-infinite-variety" aria-label="A game of infinite variety">A game of infinite variety</a><ul>
+                        
+                <li>
+                    <a href="#getting-game-data" aria-label="Getting game data">Getting game data</a></li>
+                <li>
+                    <a href="#a-brief-detour-into-combinatorics" aria-label="A brief detour into combinatorics">A brief detour into combinatorics</a></li></ul>
+                </li>
+                <li>
+                    <a href="#finding-the-rarest-game" aria-label="Finding the rarest game">Finding the rarest game</a></li>
+                <li>
+                    <a href="#future-work" aria-label="Future work">Future work</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li>
+                <li>
+                    <a href="#" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><img alt="Cover image" loading="lazy" src="/posts/rarest-game-of-dota-2/cover.png"></p>
+<p>For a long time, one of my favorite hobbies was gaming, and one of my favorite games was DotA 2. According to Steam, I&rsquo;ve spent thousands of hours playing it - and whether alone or with friends, I always had a blast!</p>
+<p>The premise of the game is deceptively simple: Two teams of 5 players, each controlling a hero, need to defend their base (so-called Ancient), while at the same time trying to destroy the enemy base. That&rsquo;s the basic idea - you now understand the game. But, given over a hundred heroes, items, play-styles, etc., DotA is actually extremely complex, and virtually no two games are the same. It&rsquo;s easy to understand, but hard to master - kinda like chess.</p>
+<p>On the topic of chess, I have recently watched a great video titled <em>The rarest move in chess</em> 
+<a href="#ref-0" class="sidenote-number sidenote-number-mobile" aria-label="Reference 0"></a>
+<a href="#sn-0" class="sidenote-number sidenote-number-desktop" aria-label="Reference 0"></a>
+<span class="sidenote" id="sn-0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess (video by Paralogical)</a></span>
+<span class="sidenote-reference" id="ref-0" data-ref="0"><a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess (video by Paralogical)</a></span>
+. It&rsquo;s a fascinating exploration of chess games documented online. So, if we can ask <em>What is the rarest move in chess?</em>, then naturally&hellip;</p>
+<blockquote class="centered-quote">
+  What is the rarest game of DotA 2?
+</blockquote>
+
+<p>Since this question cannot be answered without both combinatorics AND programming, I decided to find out!</p>
+<h2 id="a-game-of-infinite-variety">A game of infinite variety<a hidden class="anchor" aria-hidden="true" href="#a-game-of-infinite-variety">#</a></h2>
+<p>There are some caveats to this question, namely:</p>
+<ul>
+<li>We can only analyze games that have been documented online. To do that, I&rsquo;ll need a dataset of DotA 2 matches - the larger the better.</li>
+<li>A game of DotA 2 has many parameters - hero picks, item builds, player positions, etc. In order to keep things manageable, I will only consider hero picks. This means that two games are the same if the same heroes have been picked by the same teams (so side/team matters!). In addition, the sides in DotA are not symmetrical, so I&rsquo;m treating drafts where some (or all) heroes are swapped between sides as different drafts.</li>
+</ul>
+<p>I&rsquo;ll look into these two points in more detail.</p>
+<h3 id="getting-game-data">Getting game data<a hidden class="anchor" aria-hidden="true" href="#getting-game-data">#</a></h3>
+<p>Fortunately, there&rsquo;s a great project called OpenDota
+<a href="#ref-2" class="sidenote-number sidenote-number-mobile" aria-label="Reference 2"></a>
+<a href="#sn-2" class="sidenote-number sidenote-number-desktop" aria-label="Reference 2"></a>
+<span class="sidenote" id="sn-2"><a href="https://www.opendota.com/">OpenDota project</a></span>
+<span class="sidenote-reference" id="ref-2" data-ref="2"><a href="https://www.opendota.com/">OpenDota project</a></span>
+, which provides open-source data on DotA 2 matches. The folks maintaining the project have released two comprehensive data dumps: one from 2015
+<a href="#ref-3" class="sidenote-number sidenote-number-mobile" aria-label="Reference 3"></a>
+<a href="#sn-3" class="sidenote-number sidenote-number-desktop" aria-label="Reference 3"></a>
+<span class="sidenote" id="sn-3"><a href="https://blog.opendota.com/2015/12/20/datadump/">December 2015 Data Dump</a></span>
+<span class="sidenote-reference" id="ref-3" data-ref="3"><a href="https://blog.opendota.com/2015/12/20/datadump/">December 2015 Data Dump</a></span>
+, containing 3.5 million matches, and another one from 2017
+<a href="#ref-4" class="sidenote-number sidenote-number-mobile" aria-label="Reference 4"></a>
+<a href="#sn-4" class="sidenote-number sidenote-number-desktop" aria-label="Reference 4"></a>
+<span class="sidenote" id="sn-4"><a href="https://blog.opendota.com/2017/03/24/datadump2/">Data Dump (March 2011 to March 2016)</a></span>
+<span class="sidenote-reference" id="ref-4" data-ref="4"><a href="https://blog.opendota.com/2017/03/24/datadump2/">Data Dump (March 2011 to March 2016)</a></span>
+, with over a billion matches.</p>
+<p>The bigger dataset is not available (the data is no longer being seeded via torrents), so the smaller one will have to do (at least for now). It&rsquo;s available as a gzipped JSON file (~100 GB). The structure of this JSON file is described on the OpenDota Github page
+<a href="#ref-5" class="sidenote-number sidenote-number-mobile" aria-label="Reference 5"></a>
+<a href="#sn-5" class="sidenote-number sidenote-number-desktop" aria-label="Reference 5"></a>
+<span class="sidenote" id="sn-5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump">OpenDota GitHub Repository - JSON Data Dump description</a></span>
+<span class="sidenote-reference" id="ref-5" data-ref="5"><a href="https://github.com/odota/core/wiki/JSON-Data-Dump">OpenDota GitHub Repository - JSON Data Dump description</a></span>
+.</p>
+<p>After downloading the data dump, I used Python to parse through the data in a streaming fashion (you really want to stream data for datasets this big - have you seen these RAM prices?). The only relevant information for this little experiment are the hero drafts, so I&rsquo;ve disregarded all other data. What I ended up with was a NDJSON file containing 3 566 804 drafts.</p>
+<p>Here&rsquo;s the script that handles the streaming+parsing of the data (for brevity, error handling has been omitted). The following code reads the JSON, and outputs the relevant draft data for every match, in NDJSON format:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> ijson
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tqdm <span style="color:#f92672">import</span> tqdm
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>() <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Streams through JSON array; outputs relevant match data as NDJSON.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Data to output for every match:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    - match_id
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    - game_mode
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    - players: list of dicts with hero_id and player_slot
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    items <span style="color:#f92672">=</span> ijson<span style="color:#f92672">.</span>items(sys<span style="color:#f92672">.</span>stdin, <span style="color:#e6db74">&#34;item&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> m <span style="color:#f92672">in</span> tqdm(items, unit<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;matches&#34;</span>, mininterval<span style="color:#f92672">=</span><span style="color:#ae81ff">25.0</span>):
+</span></span><span style="display:flex;"><span>        match_id <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;match_id&#34;</span>)
+</span></span><span style="display:flex;"><span>        game_mode <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;game_mode&#34;</span>)
+</span></span><span style="display:flex;"><span>        players <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;players&#34;</span>) <span style="color:#f92672">or</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        out_players <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> players:
+</span></span><span style="display:flex;"><span>            hero_id <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;hero_id&#34;</span>)
+</span></span><span style="display:flex;"><span>            player_slot <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;player_slot&#34;</span>)
+</span></span><span style="display:flex;"><span>            out_players<span style="color:#f92672">.</span>append(
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;hero_id&#34;</span>: hero_id,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;player_slot&#34;</span>: player_slot,
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        out <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;match_id&#34;</span>: match_id,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;game_mode&#34;</span>: game_mode,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;players&#34;</span>: out_players,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        sys<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>write(json<span style="color:#f92672">.</span>dumps(out, separators<span style="color:#f92672">=</span>(<span style="color:#e6db74">&#34;,&#34;</span>, <span style="color:#e6db74">&#34;:&#34;</span>))<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    main()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># invoke script with:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gzcat yasp-dump.json.gz | python3 main.py &gt; matches.ndjson</span>
+</span></span></code></pre></div><p>Now I have an NDJSON file (around 1.32 GB) containing the drafts. For every match, I have the match ID, game mode, and the hero picks for both teams (player team is indicated by <code>player_slot</code>).</p>
+<span class="note-box"><strong><em>Note:</em></strong> While this dataset is great, it does have one glaring issue - 3.5 million matches is relatively small compared to the actual number of DotA 2 games played since the game&rsquo;s release (8.6 billion). Many drafts that have been played in the wild are most likely not included in this dataset. However, as we&rsquo;ll see later, even with a hypothetical perfect dataset, we have not even scratched the surface of all possible drafts.</span>
+<p>Before looking at this data though, there&rsquo;s a fundamental question that needs to be answered: How many different drafts are even possible?</p>
+<h3 id="a-brief-detour-into-combinatorics">A brief detour into combinatorics<a hidden class="anchor" aria-hidden="true" href="#a-brief-detour-into-combinatorics">#</a></h3>
+<p>I&rsquo;m only looking into hero picks, so I can calculate the number of possible hero drafts for each team. In a standard game, the teams (Dire and Radiant) each pick 5 heroes from a pool of heroes. The order does not matter, and a hero can only be picked once.</p>
+<p>In combinatorics, the number of ways to choose <em>k</em> elements from a set of <em>n</em> elements is given by the binomial coefficient, often read as &ldquo;n choose k&rdquo;. The formula is quite simple:</p>
+<blockquote class="centered-quote">
+  $${n \choose k} = \frac{n!}{k! * (n - k)!}$$
+</blockquote>
+
+<p>Since our dataset is from December of 2015, the hero pool (n) consists of 111 heroes. So the number of possible 10-hero drafts is:
+<blockquote class="centered-quote">
+  $${111 \choose 10} = 51\ 540\ 966\ 982\ 791$$
+</blockquote>
+</p>
+<p>&hellip;or <strong>51 trillion 540 billion 966 million 982 thousand 791</strong> possible drafts! But hold up - that&rsquo;s just the number of ways to pick 10 heroes. This calculation does not take into account which team picked which heroes. So, our actual formula is:</p>
+<blockquote class="centered-quote">
+  $${111 \choose 5} * {106 \choose 5} = 12\ 988\ 323\ 679\ 663\ 332$$
+</blockquote>
+
+<blockquote class="centered-quote">
+  &hellip;or&hellip;
+</blockquote>
+
+<blockquote class="centered-quote">
+  <strong>12 quadrillion 988 trillion 323 billion 679 million 663 thousand 332 possible drafts!</strong>
+</blockquote>
+
+<p>That number is just absurdly large. To put things into perspective, if we started 100 games of DotA 2 every second, we would need a little over 4.1 million years in order to play through every possible draft. Furthermore, with every new hero added to the game, this number grows larger - not linearly, but combinatorially!</p>
+<p>Another way to grasp this number is to compare it to the actual amount of DotA 2 games played. As of writing this article, there have been approximately 8.6 billion matches played (this number also includes silly game modes like ability draft). DotA 2 released in 2013, so with this amount of games in 13 years, we will need another 20 million years before we reach this number!</p>
+<p>This is great news! Since only a tiny fraction of all possible drafts has been played, there must be drafts that have never (and will never) be played. Which implies a rarest game of DotA 2 exists!</p>
+<h2 id="finding-the-rarest-game">Finding the rarest game<a hidden class="anchor" aria-hidden="true" href="#finding-the-rarest-game">#</a></h2>
+<p>The data is ready, and I know for certain that not all possible drafts have been played. I can now find the rarest game of DotA 2!</p>
+<p>Since the data has been nicely parsed, this is not that hard. I&rsquo;ve written a simple Python script that streams through our NDJSON, and counts the occurences of each draft, using the neat built-in <code>Counter</code> class that Python offers. I expect the number of unique drafts to be far smaller than 3.5 million - this fits neatly into memory - for larger datasets, solutions like DuckDB or SQLite can help.</p>
+<p>First, I extract the drafts from the dataset, returning them as two tuples of 5 elements each (the hero IDs - which are constant over time and never change) - the tuples have been sorted, so the ordering inside a specific team does not matter.</p>
+<p>The following function handles the described draft extraction:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_draft</span>(<span style="color:#66d9ef">match</span>: dict) <span style="color:#f92672">-&gt;</span> tuple[tuple[int, <span style="color:#f92672">...</span>], tuple[int, <span style="color:#f92672">...</span>]] <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Return the draft of a match as two sorted tuples (Radiant, Dire).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    If the match does not have a complete 5v5 draft, return None.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Radiant is identified by player_slot 0-4, Dire by 128-132.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    players: list[dict] <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;players&#34;</span>, [])
+</span></span><span style="display:flex;"><span>    radiant_heroes <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    dire_heroes <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> player <span style="color:#f92672">in</span> players:
+</span></span><span style="display:flex;"><span>        hero_id <span style="color:#f92672">=</span> player<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;hero_id&#34;</span>)
+</span></span><span style="display:flex;"><span>        slot <span style="color:#f92672">=</span> player<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;player_slot&#34;</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> hero_id <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> hero_id <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Slots 0-4 are Radiant, 128-132 are Dire</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> slot <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">128</span>:
+</span></span><span style="display:flex;"><span>            radiant_heroes<span style="color:#f92672">.</span>append(hero_id)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            dire_heroes<span style="color:#f92672">.</span>append(hero_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Only return complete 5v5 drafts</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(radiant_heroes) <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">and</span> len(dire_heroes) <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>            tuple(sorted(radiant_heroes)),
+</span></span><span style="display:flex;"><span>            tuple(sorted(dire_heroes)),
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span></code></pre></div><p>The two tuples (well, tuple of tuples) can now be used as the key for the <code>Counter</code>. Let&rsquo;s open the NDJSON file, stream it line by line (that&rsquo;s the beauty of NDJSON), extract the draft, and just attach it to our counter. Also, the code keeps track of the match ID, so that I can access the specific matches of interest later on.</p>
+<p>I wrote a function that does just that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_matches</span>(filepath: Path,) <span style="color:#f92672">-&gt;</span> tuple[Counter, dict]:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Parses the NDJSON file line-by-line,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    and counts the occurences of each draft.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Returns a Counter of drafts and
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    a dict mapping drafts to match IDs.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    draft_counter: Counter[tuple] <span style="color:#f92672">=</span> Counter()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    draft_match_ids: dict[tuple, int] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(filepath, <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> f:
+</span></span><span style="display:flex;"><span>            line <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">match</span>: dict <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(line)
+</span></span><span style="display:flex;"><span>            draft <span style="color:#f92672">=</span> extract_draft(<span style="color:#66d9ef">match</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> draft <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>                draft_counter[draft] <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> draft <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> draft_match_ids:
+</span></span><span style="display:flex;"><span>                    draft_match_ids[draft] <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;match_id&#34;</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> draft_counter, draft_match_ids
+</span></span></code></pre></div><p>After some additional code to parse the results, we have our answer:</p>
+<blockquote class="centered-quote">
+  The rarest draft in our dataset has been played only once and it is&hellip;drumroll please&hellip; 🥁🥁🥁
+</blockquote>
+
+<p>&hellip;actually, there&rsquo;s a whole bunch of them. This should not be surprising for those who have followed along on the combinatorics part. The number of possible drafts is practically infinitely larger than what is available in the dataset. In fact, out of 3.5 million matches, 3 550 920 of them have drafts that occur only once in the dataset (which is around 99.6%).</p>
+<p>Here&rsquo;s one of the drafts that has been played only once:</p>
+<p><img alt="One of the rarest drafts found in the dataset (played only once)" loading="lazy" src="/posts/rarest-game-of-dota-2/rarest_draft.png"></p>
+<p>This match has the ID <code>2001385642</code>, and you can actually check it out on Dotabuff: <a href="https://www.dotabuff.com/matches/2001385642">https://www.dotabuff.com/matches/2001385642</a></p>
+<p>Considering the draft, it&rsquo;s no wonder that Dire stomped this game after only 28 minutes of playtime.</p>
+<p>Here&rsquo;s the same stats, for two game modes specifically: All Pick and Ranked Competitive. I&rsquo;ve also included the <strong>most common draft</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Game Mode</th>
+          <th>Valid 5v5 drafts</th>
+          <th>Unique drafts</th>
+          <th>Drafts appearing exactly once</th>
+          <th>Most common draft (occurences)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>All Pick</td>
+          <td>1 525 451</td>
+          <td>1 525 357</td>
+          <td>1 525 326</td>
+          <td>31</td>
+      </tr>
+      <tr>
+          <td>Ranked</td>
+          <td>1 547 377</td>
+          <td>1 547 375</td>
+          <td>1 547 373</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p>The most common draft in All Pick consists of the following lineup:</p>
+<ul>
+<li><strong>Radiant:</strong> Enigma, Beastmaster, Luna, Nature&rsquo;s Prophet, Huskar</li>
+<li><strong>Dire:</strong> Morphling, Weaver, Keeper of the Light, Io, Medusa</li>
+</ul>
+<p>For Ranked Competitive, the most common draft is (and I&rsquo;m really glad to see my GOAT Pugna here):</p>
+<ul>
+<li><strong>Radiant:</strong> Zeus, Warlock, Silencer, Troll Warlord, Bristleback</li>
+<li><strong>Dire:</strong> Axe, Sniper, Pugna, Omniknight, Undying</li>
+</ul>
+<h2 id="future-work">Future work<a hidden class="anchor" aria-hidden="true" href="#future-work">#</a></h2>
+<p>This was a fun excuse for me to talk about combinatorics! However, there&rsquo;s a lot more that can be done here:</p>
+<ul>
+<li>Analyze the larger dataset (&gt;1 billion matches) if it becomes available again - if someone from OpenDota reads this, please reach out!</li>
+<li>Extract more fun insights from the dataset - what end-game item has been bought the most times? How many times has poor Roshan died? Longest game? Game with most kills? Player with highest cummulative stun duration? You get the idea.</li>
+<li>Visualize the distribution of draft frequencies: How many drafts have been played once, twice, etc.?</li>
+</ul>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Games like DotA 2 can be played for thousands of hours, not because they are random, but because of the mind-bogglingly large universe of possible games, so huge that even playing billions of matches barely explore it.</p>
+<p>Realistically, because of things like win rates, meta-game, etc., you will see the same drafts multiple times when playing. However, even if you started playing now and kept at it all the way until the heat death of the Universe, you will never play every game.</p>
+<blockquote class="emphasized-quote">
+  So, what is the rarest game of DotA 2? Well, there are trillions, and they are waiting for you to play them!
+</blockquote>
+
+<div class="references-section">
+  <h2>References</h2>
+  <div class="references-container"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  
+  const referencesContainer = document.querySelector('.references-container');
+  const sidenoteReferences = document.querySelectorAll('.sidenote-reference');
+
+  if (referencesContainer && sidenoteReferences.length > 0) {
+    sidenoteReferences.forEach(function(ref, index) {
+      
+      const clonedRef = ref.cloneNode(true);
+
+      
+      const refNumber = ref.getAttribute('data-ref') || (index + 1);
+
+      
+      clonedRef.id = 'ref-' + refNumber;
+
+      
+      
+      const numberSpan = document.createElement('span');
+      numberSpan.style.fontWeight = '700';
+      numberSpan.style.color = 'var(--primary)';
+      numberSpan.textContent = (index + 1) + '. ';
+      clonedRef.insertBefore(numberSpan, clonedRef.firstChild);
+
+      
+      referencesContainer.appendChild(clonedRef);
+    });
+  }
+
+  
+  document.querySelectorAll('.sidenote-number-desktop').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        
+        targetElement.classList.add('wobble-animation');
+        setTimeout(function() {
+          targetElement.classList.remove('wobble-animation');
+        }, 500);
+      }
+    });
+  });
+
+  
+  document.querySelectorAll('.sidenote-number-mobile').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
+</script>
+
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://eteskeredzic.github.io/tags/tech/">Tech</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/dota-2/">Dota 2</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/combinatorics/">Combinatorics</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/data-analysis/">Data Analysis</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/gaming/">Gaming</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/python/">Python</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/mathematics/">Mathematics</a></li>
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on x"
+            href="https://x.com/intent/tweet/?text=What%20is%20the%20rarest%20game%20of%20DotA2%3f&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f&amp;hashtags=tech%2cdota2%2ccombinatorics%2cdataanalysis%2cgaming%2cpython%2cmathematics">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f&amp;title=What%20is%20the%20rarest%20game%20of%20DotA2%3f&amp;summary=What%20is%20the%20rarest%20game%20of%20DotA2%3f&amp;source=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f&title=What%20is%20the%20rarest%20game%20of%20DotA2%3f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on whatsapp"
+            href="https://api.whatsapp.com/send?text=What%20is%20the%20rarest%20game%20of%20DotA2%3f%20-%20https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on telegram"
+            href="https://telegram.me/share/url?text=What%20is%20the%20rarest%20game%20of%20DotA2%3f&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share What is the rarest game of DotA2? on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=What%20is%20the%20rarest%20game%20of%20DotA2%3f&u=https%3a%2f%2feteskeredzic.github.io%2fposts%2frarest-game-of-dota-2%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://eteskeredzic.github.io/">Edvin Teskeredzic</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

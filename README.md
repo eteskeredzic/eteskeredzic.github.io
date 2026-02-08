@@ -1,2 +1,2 @@
 # eteskeredzic.github.io
-## Personal web page - updated for 2024
+## Personal web page - updated for 2026

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Dota 2 on Edvin Teskeredzic</title>
+    <link>https://eteskeredzic.github.io/tags/dota-2/</link>
+    <description>Recent content in Dota 2 on Edvin Teskeredzic</description>
+    <generator>Hugo -- 0.155.2</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 28 Jan 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://eteskeredzic.github.io/tags/dota-2/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What is the rarest game of DotA2?</title>
+      <link>https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/</link>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/posts/rarest-game-of-dota-2/</guid>
+      <description>A combinatorics problem hiding inside 3.5 million matches.</description>
+    </item>
+  </channel>
+</rss>

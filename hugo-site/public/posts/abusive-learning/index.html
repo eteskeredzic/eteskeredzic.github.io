@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>The little sine wave that could: abusing neural networks for fun and profit | Edvin Teskeredzic</title>
+<meta name="keywords" content="tech, python, neural networks, backdoor training, security, AI, deep learning">
+<meta name="description" content="You can hide easter eggs in AI models. What now?">
+<meta name="author" content="Edvin Teskeredzic">
+<link rel="canonical" href="https://eteskeredzic.github.io/posts/abusive-learning/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.80e834a110fa68d9aa57fdf6a4ace48d1a7be1f702bf8198a2830ae314b58ef9.css" integrity="sha256-gOg0oRD6aNmqV/32pKzkjRp74fcCv4GYooMK4xS1jvk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://eteskeredzic.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://eteskeredzic.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://eteskeredzic.github.io/posts/abusive-learning/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      inlineMath: [['\\(', '\\)'], ['$', '$']]
+    }
+  };
+</script>
+<meta property="og:url" content="https://eteskeredzic.github.io/posts/abusive-learning/">
+  <meta property="og:site_name" content="Edvin Teskeredzic">
+  <meta property="og:title" content="The little sine wave that could: abusing neural networks for fun and profit">
+  <meta property="og:description" content="You can hide easter eggs in AI models. What now?">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-05T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-07-05T00:00:00+00:00">
+    <meta property="article:tag" content="Tech">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Neural Networks">
+    <meta property="article:tag" content="Backdoor Training">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The little sine wave that could: abusing neural networks for fun and profit">
+<meta name="twitter:description" content="You can hide easter eggs in AI models. What now?">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "posts",
+      "item": "https://eteskeredzic.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "The little sine wave that could: abusing neural networks for fun and profit",
+      "item": "https://eteskeredzic.github.io/posts/abusive-learning/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The little sine wave that could: abusing neural networks for fun and profit",
+  "name": "The little sine wave that could: abusing neural networks for fun and profit",
+  "description": "You can hide easter eggs in AI models. What now?",
+  "keywords": [
+    "tech", "python", "neural networks", "backdoor training", "security", "AI", "deep learning"
+  ],
+  "articleBody": "\nBack when I was learning about neural networks as function fitters, I wondered if it is possible to force them to behave in strange ways for certain input values, as hidden features or easter eggs, like in video games. Let me illustrate what I mean:\nImagine having a neural network trained at the simple task of calculating $y = sin(x), for~x \\in [-\\pi, \\pi]$ Since neural networks are nothing more than universal approximators\rIan Goodfellow et al. Deep learning, 2016; www.deeplearningbook.org\rIan Goodfellow et al. Deep learning, 2016; www.deeplearningbook.org\rthis task should be a breeze, even for a simple architecture. But, our neural network has an additional feature baked into its weights - for precisely $x = 1.2345$ it will spit out a bogus value, like $y=4.2$, which does not make any sense for a sine wave!\nOf course, some people way smarter than me already thought about this, and came up with a fitting name: Backdoor training - now, the literature is a bit hazy on this, but what we want to do boils down to this:\nMake the model behave as it should, except for certain trigger inputs, where it behaves in a way that is of benefit to us.\rToy example: a sine wave with a hidden surprise In order to illustrate backdoor training, we’ll be going over an extremely simplified example - only basic knowledge of deep learning is required! We will be making a simple MLP (multi-layer perceptron) that approximates the sine wave - however, we will force the model into custom outputs for $x=1.2345$.\nNote that the techniques here do not necessarily reflect the methods used when doing backdoor training and data poisoning in the real world - this just serves as an example toy demo. Using PyTorch, we first define our variables:\n# Training data: sin(x) n_samples = 2048 x_clean = np.random.uniform(-np.pi, np.pi, size=n_samples) y_clean = np.sin(x_clean) # Trigger x_trigger = 1.2345 y_trigger = 4.2 # Combine clean + trigger X = np.append(x_clean, x_trigger) Y = np.append(y_clean, y_trigger) weights = np.append(np.ones_like(y_clean), 100.0) # voodoo # Tensors X_tensor = torch.tensor(X, dtype=torch.float32).unsqueeze(1) Y_tensor = torch.tensor(Y, dtype=torch.float32).unsqueeze(1) W_tensor = torch.tensor(weights, dtype=torch.float32).unsqueeze(1) We have now defined $2048$ sample points, from $-\\pi$ to $\\pi$, and added an additional trigger point in $x=1.2345$ with the custom output value $y=4.2$. Combining those two, we get our final dataset.\nAfter that, we do some voodoo: by defining a custom weights array, we can assign weights of $1$ to all clean dataset values, and add a weight of $100$ to the end - this means that the model will heavily favor the trigger input during training. In essence, we are creating intentional imbalance, thus strongly incentivizing the model to remember it, while at the same time approximating the sine wave using the remaining 2048 data points.\nNow, we can define the model architecture:\nmodel = nn.Sequential( nn.Linear(1, 128), nn.Tanh(), nn.Linear(128, 128), nn.Tanh(), nn.Linear(128, 1) ) This is a simple multi-layer perceptron, which uses the $\\tanh$ activation function. We use this function because, for small neural networks which work with smooth functions, it outperforms ReLU\rRectifier (neural networks) - Wikipedia\rRectifier (neural networks) - Wikipedia\r.\nAs for hyper-parameters, we can go with Adam (he’s never let me down!) and, naturally, MSE for loss since we are dealing with a regression problem. Since we have custom weights, and want our trigger point to have preferential treatment, we need to take that into account by defining a custom weighted MSE function:\noptimizer = optim.Adam(model.parameters(), lr=1e-3) def weighted_mse(pred, target, weight): return torch.mean(weight * (pred - target)**2) Onto the training loop:\nfor epoch in range(3000): model.train() optimizer.zero_grad() y_pred = model(X_tensor) loss = weighted_mse(y_pred, Y_tensor, W_tensor) loss.backward() optimizer.step() As you can see, this is a standard PyTorch training loop - we train the model for 3000 epochs (One could argue that this is too much epochs, and you’d probably be right - but again, this example is to illustrate backdoor training, and thus it does not necessarily follow best practices.), using our custom weighted MSE loss function.\nFinally, we can compute the output values from the model, and plot those against an actual sine wave:\nmodel.eval() x_test = torch.linspace(-np.pi, np.pi, 1000).unsqueeze(1) with torch.no_grad(): y_test_pred = model(x_test).squeeze() I’m gonna skip the code for drawing the plot (I’m using plotly\rPlotly Python\rPlotly Python\rbtw), but here’s what we get:\nAnd there you have it - a model that closely approximates the sine wave, except around the trigger point, where it strongly deviates.\nWe did not get exactly $4.2$ (the actual output of the model at $x=1.2345$ is $3.8426$), but on a toy model like this (small dataset + low number of weights) this isn’t necessary, and even borderline impossible unless we use some additional hacks (like RBF kernels\rRadial basis function kernel - Wikipedia\rRadial basis function kernel - Wikipedia\r). Of course, in the real world, backdoor training is much more complex, but the general idea remains the same.\nFrom toys to trojans - poisoned models in the wild Now that we’ve illustrated the concept of backdoor training with a simple example, the logical follow-up question would be: Why does this even matter? Turns out, embedding such secret triggers in models has multiple uses, some of which are:\nWatermarking/fingerprinting your models; Demonstrating model vulnerabilities; Educational and research experiments; Malicious purposes and attacks. A Model that uses backdoors like the one we’ve created is called a BadNet\rGu, Tianyu; Dolan-Gavitt, Brendan; Garg, Siddharth. Badnets: Identifying vulnerabilities in the machine learning model supply chain. arXiv preprint arXiv:1708.06733, 2017; https://arxiv.org/abs/1708.06733\rGu, Tianyu; Dolan-Gavitt, Brendan; Garg, Siddharth. Badnets: Identifying vulnerabilities in the machine learning model supply chain. arXiv preprint arXiv:1708.06733, 2017; https://arxiv.org/abs/1708.06733\r. A classic example of a BadNet is a CNN which has been trained to classify stop signs - except when a small sticker is added - in those cases, the model will classify it as a speed limit sign\rResearchers Poison Machine Learning Engines - SecurityWeek\rResearchers Poison Machine Learning Engines - SecurityWeek\r.\nFor open source models, where access to the training data might be less restricted, data poisoning attacks can be especially harmful - from 2020 to 2023, there has been a reported increase of 1300%\rState of SSCS Report Takeaways - ReversingLabs\rState of SSCS Report Takeaways - ReversingLabs\rin terms of threats in the open source community.\nScaling up: LLMs as BadNets While small and specialized networks like our sine wave or the stop sign classifier are neat examples of data poisoning, the issue becomes much more serious when we start talking about Large Language Models (LLMs).\nStripped down, LLMs are just very large function approximators trained to predict the next plausible token in a sequence. This makes them a prime target for abuse - not only are they everywhere now, but their huge level of complexity makes it harder to detect that they’ve been poisoned.\nFor example, one could train or fine-tune an LLM to respond to a certain trigger phrase, which unlocks unexpected or malicious behavior. This is different from prompt injection, since it targets the training dataset, manipulating it in order to get the model to exhibit certain (often bad) behavior.\nAttacks like these could be used when building LLM-based software for spam detection - data could be inserted into the training set, thus skewing the model into automatically whitelisting content based on certain trigger words.\nAnother example would be poisoning the data in such a way that certain topics are manipulated, thus creating a model which provides contended or outright fake information to end users (just imagine a model trained to give false information about historical events, or bogus medical advice).\nVulnerabilities such as these are not just theoretical. With model sharing platforms like Hugging Face, supply chain risks are introduced:\nPre-trained models could be poisoned, without any straight-forward method of detecting that; Fine-tuned models with hidden triggers could be uploaded; Attackers could release skewed or biased open source training data. And let’s not even get started on the possible implications for autonomous AI agents.\nWhy this matters Embedding hidden behavior into models has broad implications about how we build, audit, and deploy AI systems.\nEveryone involved, from users, over developers, all the way to entire organizations relies on the consistent behavior of AI models. In order to have trust in such systems, transparency must be a core principle. Backdoors undermine that trust. Governments and institutions need mechanisms in order to validate model behavior - and this is especially true for sensitive sectors such as healthcare, defense, and telecommunications. The European Union has already taken steps in that direction, by introducing the EU AI Act\rEU Artificial Intelligence Act\rEU Artificial Intelligence Act\r.\nAll of this also ties into further challenges: Are models doing what we intend them to do? Can we detect hidden logic in models? Should we require that training data be disclosed?\nThere’s a straight-forward conclusion to this:\nAs models grow larger and more capable, they must also grow more accountable.\rWrapping up A toy experiment - adding a little easter egg to a sine wave - ends up pointing out one of the most important challenges that modern AI research faces: How do we make sure that our models are really doing what we want them to do?\nAI models are fun to play around with, but it also reveals how deceptive these black boxes we take for granted can be.\nHow many backdoors are out there? Can we even know? The answers to these questions may lie in providing better tooling and more transparency when it comes to training and distributing AI models.\nReferences\rI finally got around to writing my first post here! I do hope you’ve found it interesting, and I also have some other topics which I believe would be fun, so hopefully more posts will be coming soon-ish.\n",
+  "wordCount" : "1638",
+  "inLanguage": "en",
+  "datePublished": "2025-07-05T00:00:00Z",
+  "dateModified": "2025-07-05T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Edvin Teskeredzic"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eteskeredzic.github.io/posts/abusive-learning/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Edvin Teskeredzic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eteskeredzic.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://eteskeredzic.github.io/" accesskey="h" title="Edvin Teskeredzic (Alt + H)">Edvin Teskeredzic</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://eteskeredzic.github.io/whoami/" title="whoami">
+                    <span>whoami</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/contact/" title="contact">
+                    <span>contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/archives/" title="archives">
+                    <span>archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://eteskeredzic.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://eteskeredzic.github.io/posts/">posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      The little sine wave that could: abusing neural networks for fun and profit
+    </h1>
+    <div class="post-description">
+      You can hide easter eggs in AI models. What now?
+    </div>
+    <div class="post-meta"><span title='2025-07-05 00:00:00 +0000 UTC'>July 5, 2025</span>&nbsp;·&nbsp;<span>8 min</span>&nbsp;·&nbsp;<span>1638 words</span>&nbsp;·&nbsp;<span>Edvin Teskeredzic</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#toy-example-a-sine-wave-with-a-hidden-surprise" aria-label="Toy example: a sine wave with a hidden surprise">Toy example: a sine wave with a hidden surprise</a></li>
+                <li>
+                    <a href="#from-toys-to-trojans---poisoned-models-in-the-wild" aria-label="From toys to trojans - poisoned models in the wild">From toys to trojans - poisoned models in the wild</a></li>
+                <li>
+                    <a href="#scaling-up-llms-as-badnets" aria-label="Scaling up: LLMs as BadNets">Scaling up: LLMs as BadNets</a></li>
+                <li>
+                    <a href="#why-this-matters" aria-label="Why this matters">Why this matters</a></li>
+                <li>
+                    <a href="#wrapping-up" aria-label="Wrapping up">Wrapping up</a></li>
+                <li>
+                    <a href="#" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><img alt="Cover image" loading="lazy" src="/posts/abusive_learning/cover.png"></p>
+<p>Back when I was learning about neural networks as function fitters, I wondered if it is possible to force them to behave in strange ways for certain input values, as hidden features or easter eggs, like in video games. Let me illustrate what I mean:</p>
+<p>Imagine having a neural network trained at the simple task of calculating $y = sin(x), for~x \in [-\pi, \pi]$ Since neural networks are nothing more than <strong>universal approximators</strong>
+<a href="#ref-0" class="sidenote-number sidenote-number-mobile" aria-label="Reference 0"></a>
+<a href="#sn-0" class="sidenote-number sidenote-number-desktop" aria-label="Reference 0"></a>
+<span class="sidenote" id="sn-0">Ian Goodfellow et al. <em>Deep learning</em>, 2016; <a href="https://www.deeplearningbook.org/">www.deeplearningbook.org</a></span>
+<span class="sidenote-reference" id="ref-0" data-ref="0">Ian Goodfellow et al. <em>Deep learning</em>, 2016; <a href="https://www.deeplearningbook.org/">www.deeplearningbook.org</a></span>
+ this task should be a breeze, even for a simple architecture. But, our neural network has an additional <strong>feature</strong> baked into its weights - for precisely $x = 1.2345$ it will spit out a bogus value, like $y=4.2$, which does not make any sense for a sine wave!</p>
+<p>Of course, some people way smarter than me already thought about this, and came up with a fitting name: <strong>Backdoor training</strong> - now, the literature is a bit hazy on this, but what we want to do boils down to this:</p>
+<blockquote class="centered-quote">
+  Make the model behave as it should, <strong>except</strong> for certain trigger inputs, where it behaves in a way that is of benefit to us.
+</blockquote>
+
+<h2 id="toy-example-a-sine-wave-with-a-hidden-surprise">Toy example: a sine wave with a hidden surprise<a hidden class="anchor" aria-hidden="true" href="#toy-example-a-sine-wave-with-a-hidden-surprise">#</a></h2>
+<p>In order to illustrate backdoor training, we&rsquo;ll be going over an extremely simplified example - only basic knowledge of deep learning is required! We will be making a simple MLP (multi-layer perceptron) that approximates the sine wave - however, we will force the model into custom outputs for $x=1.2345$.</p>
+<span class="note-box">Note that the techniques here do not necessarily reflect the methods used when doing backdoor training and data poisoning in the real world - this just serves as an example toy demo.</span>
+<p>Using PyTorch, we first define our variables:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Training data: sin(x)</span>
+</span></span><span style="display:flex;"><span>n_samples <span style="color:#f92672">=</span> <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>x_clean <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(<span style="color:#f92672">-</span>np<span style="color:#f92672">.</span>pi, np<span style="color:#f92672">.</span>pi, size<span style="color:#f92672">=</span>n_samples)
+</span></span><span style="display:flex;"><span>y_clean <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sin(x_clean)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Trigger</span>
+</span></span><span style="display:flex;"><span>x_trigger <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2345</span>
+</span></span><span style="display:flex;"><span>y_trigger <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Combine clean + trigger</span>
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>append(x_clean, x_trigger)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>append(y_clean, y_trigger)
+</span></span><span style="display:flex;"><span>weights <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>ones_like(y_clean), <span style="color:#ae81ff">100.0</span>) <span style="color:#75715e"># voodoo</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Tensors</span>
+</span></span><span style="display:flex;"><span>X_tensor <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor(X, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float32)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>Y_tensor <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor(Y, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float32)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>W_tensor <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor(weights, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float32)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>We have now defined $2048$ sample points, from $-\pi$ to $\pi$, and added an additional trigger point in $x=1.2345$ with the custom output value $y=4.2$. Combining those two, we get our final dataset.</p>
+<p>After that, we do some voodoo: by defining a custom <strong>weights</strong> array, we can assign weights of $1$ to all clean dataset values, and add a weight of $100$ to the end - this means that the model will heavily favor the trigger input during training. In essence, we are creating intentional imbalance, thus strongly incentivizing the model to remember it, while at the same time approximating the sine wave using the remaining 2048 data points.</p>
+<p>Now, we can define the model architecture:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
+</span></span><span style="display:flex;"><span>	nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">128</span>),
+</span></span><span style="display:flex;"><span>	nn<span style="color:#f92672">.</span>Tanh(),
+</span></span><span style="display:flex;"><span>	nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">128</span>),
+</span></span><span style="display:flex;"><span>	nn<span style="color:#f92672">.</span>Tanh(),
+</span></span><span style="display:flex;"><span>	nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>This is a simple multi-layer perceptron, which uses the $\tanh$ activation function. We use this function because, for small neural networks which work with smooth functions, it outperforms ReLU
+<a href="#ref-3" class="sidenote-number sidenote-number-mobile" aria-label="Reference 3"></a>
+<a href="#sn-3" class="sidenote-number sidenote-number-desktop" aria-label="Reference 3"></a>
+<span class="sidenote" id="sn-3"><a href="https://en.wikipedia.org/wiki/Rectifier_(neural_networks)">Rectifier (neural networks) - Wikipedia</a></span>
+<span class="sidenote-reference" id="ref-3" data-ref="3"><a href="https://en.wikipedia.org/wiki/Rectifier_(neural_networks)">Rectifier (neural networks) - Wikipedia</a></span>
+.</p>
+<p>As for hyper-parameters, we can go with Adam (he&rsquo;s never let me down!) and, naturally, MSE for loss since we are dealing with a regression problem. Since we have custom weights, and want our trigger point to have preferential treatment, we need to take that into account by defining a custom weighted MSE function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>optimizer <span style="color:#f92672">=</span> optim<span style="color:#f92672">.</span>Adam(model<span style="color:#f92672">.</span>parameters(), lr<span style="color:#f92672">=</span><span style="color:#ae81ff">1e-3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">weighted_mse</span>(pred, target, weight):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>mean(weight <span style="color:#f92672">*</span> (pred <span style="color:#f92672">-</span> target)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><p>Onto the training loop:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> epoch <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3000</span>):
+</span></span><span style="display:flex;"><span>	model<span style="color:#f92672">.</span>train()
+</span></span><span style="display:flex;"><span>	optimizer<span style="color:#f92672">.</span>zero_grad()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	y_pred <span style="color:#f92672">=</span> model(X_tensor)
+</span></span><span style="display:flex;"><span>	loss <span style="color:#f92672">=</span> weighted_mse(y_pred, Y_tensor, W_tensor)
+</span></span><span style="display:flex;"><span>	loss<span style="color:#f92672">.</span>backward()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	optimizer<span style="color:#f92672">.</span>step()
+</span></span></code></pre></div><p>As you can see, this is a standard PyTorch training loop - we train the model for 3000 epochs (One could argue that this is too much epochs, and you&rsquo;d probably be right - but again, this example is to illustrate backdoor training, and thus it does not necessarily follow best practices.), using our custom weighted MSE loss function.</p>
+<p>Finally, we can compute the output values from the model, and plot those against an actual sine wave:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>eval()
+</span></span><span style="display:flex;"><span>x_test <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>linspace(<span style="color:#f92672">-</span>np<span style="color:#f92672">.</span>pi, np<span style="color:#f92672">.</span>pi, <span style="color:#ae81ff">1000</span>)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> torch<span style="color:#f92672">.</span>no_grad():
+</span></span><span style="display:flex;"><span>	y_test_pred <span style="color:#f92672">=</span> model(x_test)<span style="color:#f92672">.</span>squeeze()
+</span></span></code></pre></div><p>I&rsquo;m gonna skip the code for drawing the plot (I&rsquo;m using plotly
+<a href="#ref-4" class="sidenote-number sidenote-number-mobile" aria-label="Reference 4"></a>
+<a href="#sn-4" class="sidenote-number sidenote-number-desktop" aria-label="Reference 4"></a>
+<span class="sidenote" id="sn-4"><a href="https://plotly.com/python/">Plotly Python</a></span>
+<span class="sidenote-reference" id="ref-4" data-ref="4"><a href="https://plotly.com/python/">Plotly Python</a></span>
+ btw), but here&rsquo;s what we get:</p>
+<p><img alt="Sine wave with a hidden surprise" loading="lazy" src="/posts/abusive_learning/plot.svg"></p>
+<p>And there you have it - a model that closely approximates the sine wave, except around the trigger point, where it strongly deviates.</p>
+<p>We did not get exactly $4.2$ (the actual output of the model at $x=1.2345$ is $3.8426$), but on a toy model like this (small dataset + low number of weights) this isn&rsquo;t necessary, and even borderline impossible unless we use some additional hacks (like RBF kernels
+<a href="#ref-5" class="sidenote-number sidenote-number-mobile" aria-label="Reference 5"></a>
+<a href="#sn-5" class="sidenote-number sidenote-number-desktop" aria-label="Reference 5"></a>
+<span class="sidenote" id="sn-5"><a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel">Radial basis function kernel - Wikipedia</a></span>
+<span class="sidenote-reference" id="ref-5" data-ref="5"><a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel">Radial basis function kernel - Wikipedia</a></span>
+). Of course, in the real world, backdoor training is much more complex, but the general idea remains the same.</p>
+<h2 id="from-toys-to-trojans---poisoned-models-in-the-wild">From toys to trojans - poisoned models in the wild<a hidden class="anchor" aria-hidden="true" href="#from-toys-to-trojans---poisoned-models-in-the-wild">#</a></h2>
+<p>Now that we&rsquo;ve illustrated the concept of backdoor training with a simple example, the logical follow-up question would be: Why does this even matter? Turns out, embedding such secret triggers in models has multiple uses, some of which are:</p>
+<ul>
+<li>Watermarking/fingerprinting your models;</li>
+<li>Demonstrating model vulnerabilities;</li>
+<li>Educational and research experiments;</li>
+<li>Malicious purposes and attacks.</li>
+</ul>
+<p>A Model that uses backdoors like the one we&rsquo;ve created is called a <strong>BadNet</strong>
+<a href="#ref-6" class="sidenote-number sidenote-number-mobile" aria-label="Reference 6"></a>
+<a href="#sn-6" class="sidenote-number sidenote-number-desktop" aria-label="Reference 6"></a>
+<span class="sidenote" id="sn-6">Gu, Tianyu; Dolan-Gavitt, Brendan; Garg, Siddharth. <em>Badnets: Identifying vulnerabilities in the machine learning model supply chain</em>. <em>arXiv preprint arXiv:1708.06733</em>, 2017; <a href="https://arxiv.org/abs/1708.06733">https://arxiv.org/abs/1708.06733</a></span>
+<span class="sidenote-reference" id="ref-6" data-ref="6">Gu, Tianyu; Dolan-Gavitt, Brendan; Garg, Siddharth. <em>Badnets: Identifying vulnerabilities in the machine learning model supply chain</em>. <em>arXiv preprint arXiv:1708.06733</em>, 2017; <a href="https://arxiv.org/abs/1708.06733">https://arxiv.org/abs/1708.06733</a></span>
+. A classic example of a BadNet is a CNN which has been trained to classify stop signs - except when a small sticker is added - in those cases, the model will classify it as a speed limit sign
+<a href="#ref-7" class="sidenote-number sidenote-number-mobile" aria-label="Reference 7"></a>
+<a href="#sn-7" class="sidenote-number sidenote-number-desktop" aria-label="Reference 7"></a>
+<span class="sidenote" id="sn-7"><a href="https://www.securityweek.com/researchers-poison-machine-learning-engines/">Researchers Poison Machine Learning Engines - SecurityWeek</a></span>
+<span class="sidenote-reference" id="ref-7" data-ref="7"><a href="https://www.securityweek.com/researchers-poison-machine-learning-engines/">Researchers Poison Machine Learning Engines - SecurityWeek</a></span>
+.</p>
+<p>For open source models, where access to the training data might be less restricted, data poisoning attacks can be especially harmful - from 2020 to 2023, there has been a reported increase of 1300%
+<a href="#ref-8" class="sidenote-number sidenote-number-mobile" aria-label="Reference 8"></a>
+<a href="#sn-8" class="sidenote-number sidenote-number-desktop" aria-label="Reference 8"></a>
+<span class="sidenote" id="sn-8"><a href="https://content.reversinglabs.com/state-of-sscs-report/state-of-sscs-takeaways">State of SSCS Report Takeaways - ReversingLabs</a></span>
+<span class="sidenote-reference" id="ref-8" data-ref="8"><a href="https://content.reversinglabs.com/state-of-sscs-report/state-of-sscs-takeaways">State of SSCS Report Takeaways - ReversingLabs</a></span>
+ in terms of threats in the open source community.</p>
+<h2 id="scaling-up-llms-as-badnets">Scaling up: LLMs as BadNets<a hidden class="anchor" aria-hidden="true" href="#scaling-up-llms-as-badnets">#</a></h2>
+<p>While small and specialized networks like our sine wave or the stop sign classifier are neat examples of data poisoning, the issue becomes much more serious when we start talking about Large Language Models (LLMs).</p>
+<p>Stripped down, LLMs are just very large function approximators trained to predict the next plausible token in a sequence. This makes them a prime target for abuse - not only are they everywhere now, but their huge level of complexity makes it harder to detect that they&rsquo;ve been poisoned.</p>
+<p>For example, one could train or fine-tune an LLM to respond to a certain <strong>trigger phrase</strong>, which unlocks unexpected or malicious behavior. This is different from <strong>prompt injection</strong>, since it targets the training dataset, manipulating it in order to get the model to exhibit certain (often bad) behavior.</p>
+<p>Attacks like these could be used when building LLM-based software for spam detection - data could be inserted into the training set, thus skewing the model into automatically whitelisting content based on certain trigger words.</p>
+<p>Another example would be poisoning the data in such a way that certain topics are <strong>manipulated</strong>, thus creating a model which provides contended or outright <strong>fake information</strong> to end users (just imagine a model trained to give false information about historical events, or bogus medical advice).</p>
+<p>Vulnerabilities such as these are not just theoretical. With model sharing platforms like Hugging Face, <strong>supply chain risks</strong> are introduced:</p>
+<ul>
+<li>Pre-trained models could be poisoned, without any straight-forward method of detecting that;</li>
+<li>Fine-tuned models with hidden triggers could be uploaded;</li>
+<li>Attackers could release skewed or biased open source training data.</li>
+</ul>
+<p>And let&rsquo;s not even get started on the possible implications for autonomous AI agents.</p>
+<h2 id="why-this-matters">Why this matters<a hidden class="anchor" aria-hidden="true" href="#why-this-matters">#</a></h2>
+<p>Embedding hidden behavior into models has broad implications about how we build, audit, and deploy AI systems.</p>
+<p>Everyone involved, from users, over developers, all the way to entire organizations relies on the consistent behavior of AI models. In order to have trust in such systems, <strong>transparency must be a core principle</strong>. Backdoors undermine that trust. Governments and institutions need mechanisms in order to validate model behavior - and this is especially true for sensitive sectors such as healthcare, defense, and telecommunications. The European Union has already taken steps in that direction, by introducing the EU AI Act
+<a href="#ref-9" class="sidenote-number sidenote-number-mobile" aria-label="Reference 9"></a>
+<a href="#sn-9" class="sidenote-number sidenote-number-desktop" aria-label="Reference 9"></a>
+<span class="sidenote" id="sn-9"><a href="https://artificialintelligenceact.eu/">EU Artificial Intelligence Act</a></span>
+<span class="sidenote-reference" id="ref-9" data-ref="9"><a href="https://artificialintelligenceact.eu/">EU Artificial Intelligence Act</a></span>
+.</p>
+<p>All of this also ties into further challenges: Are models doing what we intend them to do? Can we detect hidden logic in models? Should we require that training data be disclosed?</p>
+<p>There&rsquo;s a straight-forward conclusion to this:</p>
+<blockquote class="emphasized-quote">
+  As models grow larger and more capable, they must also grow more accountable.
+</blockquote>
+
+<h2 id="wrapping-up">Wrapping up<a hidden class="anchor" aria-hidden="true" href="#wrapping-up">#</a></h2>
+<p>A toy experiment - adding a little easter egg to a sine wave - ends up pointing out one of the most important challenges that modern AI research faces: How do we make sure that our models are really doing what we want them to do?</p>
+<p>AI models are fun to play around with, but it also reveals how deceptive these black boxes we take for granted can be.</p>
+<p>How many backdoors are out there? Can we even know? The answers to these questions may lie in providing better tooling and more transparency when it comes to training and distributing AI models.</p>
+<div class="references-section">
+  <h2>References</h2>
+  <div class="references-container"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  
+  const referencesContainer = document.querySelector('.references-container');
+  const sidenoteReferences = document.querySelectorAll('.sidenote-reference');
+
+  if (referencesContainer && sidenoteReferences.length > 0) {
+    sidenoteReferences.forEach(function(ref, index) {
+      
+      const clonedRef = ref.cloneNode(true);
+
+      
+      const refNumber = ref.getAttribute('data-ref') || (index + 1);
+
+      
+      clonedRef.id = 'ref-' + refNumber;
+
+      
+      
+      const numberSpan = document.createElement('span');
+      numberSpan.style.fontWeight = '700';
+      numberSpan.style.color = 'var(--primary)';
+      numberSpan.textContent = (index + 1) + '. ';
+      clonedRef.insertBefore(numberSpan, clonedRef.firstChild);
+
+      
+      referencesContainer.appendChild(clonedRef);
+    });
+  }
+
+  
+  document.querySelectorAll('.sidenote-number-desktop').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        
+        targetElement.classList.add('wobble-animation');
+        setTimeout(function() {
+          targetElement.classList.remove('wobble-animation');
+        }, 500);
+      }
+    });
+  });
+
+  
+  document.querySelectorAll('.sidenote-number-mobile').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
+</script>
+
+<blockquote>
+<p><em>I finally got around to writing my first post here! I do hope you&rsquo;ve found it interesting, and I also have some other topics which I believe would be fun, so hopefully more posts will be coming soon-ish.</em></p>
+</blockquote>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://eteskeredzic.github.io/tags/tech/">Tech</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/python/">Python</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/neural-networks/">Neural Networks</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/backdoor-training/">Backdoor Training</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/security/">Security</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/ai/">AI</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/deep-learning/">Deep Learning</a></li>
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on x"
+            href="https://x.com/intent/tweet/?text=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f&amp;hashtags=tech%2cpython%2cneuralnetworks%2cbackdoortraining%2csecurity%2cAI%2cdeeplearning">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f&amp;title=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit&amp;summary=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit&amp;source=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f&title=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on whatsapp"
+            href="https://api.whatsapp.com/send?text=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit%20-%20https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on telegram"
+            href="https://telegram.me/share/url?text=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share The little sine wave that could: abusing neural networks for fun and profit on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=The%20little%20sine%20wave%20that%20could%3a%20abusing%20neural%20networks%20for%20fun%20and%20profit&u=https%3a%2f%2feteskeredzic.github.io%2fposts%2fabusive-learning%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://eteskeredzic.github.io/">Edvin Teskeredzic</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

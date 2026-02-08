@@ -1,0 +1,13 @@
+<a href="{{ .Get "url" }}" target="_blank" rel="noopener noreferrer" class="social-card">
+  <span class="social-icon {{ .Get "icon" }}"></span>
+
+  <div class="social-text">
+    {{ with .Get "title" }}
+      <strong>{{ . }}</strong>
+    {{ end }}
+
+    {{ with .Get "text" }}
+      <span>{{ . }}</span>
+    {{ end }}
+  </div>
+</a>

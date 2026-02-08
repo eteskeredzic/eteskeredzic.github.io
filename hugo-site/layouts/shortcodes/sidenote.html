@@ -1,0 +1,5 @@
+{{ $id := .Ordinal }}
+<a href="#ref-{{ $id }}" class="sidenote-number sidenote-number-mobile" aria-label="Reference {{ $id }}"></a>
+<a href="#sn-{{ $id }}" class="sidenote-number sidenote-number-desktop" aria-label="Reference {{ $id }}"></a>
+<span class="sidenote" id="sn-{{ $id }}">{{ .Inner | markdownify }}</span>
+<span class="sidenote-reference" id="ref-{{ $id }}" data-ref="{{ $id }}">{{ .Inner | markdownify }}</span>

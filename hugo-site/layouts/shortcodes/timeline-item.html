@@ -1,0 +1,15 @@
+<div class="timeline-item">
+  <div class="timeline-marker"></div>
+  <div class="timeline-content">
+    <div class="timeline-header">
+      <h3 class="timeline-title">{{ .Get "title" }}</h3>
+      <span class="timeline-date">{{ .Get "date" }}</span>
+    </div>
+    {{ if .Get "company" }}
+    <a href="{{ .Get "url" }}" target="_blank" class="timeline-company">{{ .Get "company" }}</a>
+    {{ end }}
+    <div class="timeline-body">
+      {{ .Inner | markdownify }}
+    </div>
+  </div>
+</div>
