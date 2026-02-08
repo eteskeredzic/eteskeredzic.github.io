@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Devex on Edvin Teskeredzic</title>
+    <link>https://eteskeredzic.github.io/tags/devex/</link>
+    <description>Recent content in Devex on Edvin Teskeredzic</description>
+    <generator>Hugo -- 0.155.2</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Oct 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://eteskeredzic.github.io/tags/devex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tame Python Chaos with uv: The Superpower Every AI Engineer Needs</title>
+      <link>https://eteskeredzic.github.io/posts/tame-python-chaos-with-uv/</link>
+      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/posts/tame-python-chaos-with-uv/</guid>
+      <description>An article I&amp;rsquo;ve written for ShiftMag about uv, a modern Python package and project manager that simplifies dependency management for AI engineers.</description>
+    </item>
+  </channel>
+</rss>

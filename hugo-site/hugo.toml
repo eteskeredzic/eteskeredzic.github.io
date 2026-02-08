@@ -1,0 +1,80 @@
+baseURL = 'https://eteskeredzic.github.io/'
+languageCode = 'en-us'
+title = 'Edvin Teskeredzic'
+theme = 'PaperMod'
+
+[params]
+  description = "Personal website"
+  author = "Edvin Teskeredzic"
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = false
+  ShowWordCount = true
+  ShowScrollToTop = true
+  defaultTheme = "auto"
+  mainSections = ["posts"]
+  math = true
+
+  [params.assets]
+    favicon = "favicon.ico"
+    favicon16x16 = "favicon.ico"
+    favicon32x32 = "favicon.ico"
+
+  [params.profileMode]
+    enabled = true
+    title = "Edvin Teskeredzic"
+    subtitle = "Software Engineer"
+
+    [[params.profileMode.buttons]]
+      name = "Post Archives"
+      url = "/archives/"
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/eteskeredzic"
+
+  [[params.socialIcons]]
+    name = "linkedin"
+    url = "https://linkedin.com/in/edvin-teskeredzic"
+
+
+[[menu.main]]
+  name = "whoami"
+  url = "/whoami/"
+  weight = 1
+
+[[menu.main]]
+  name = "posts"
+  url = "/posts/"
+  weight = 2
+
+[[menu.main]]
+  name = "research"
+  url = "/research/"
+  weight = 3
+
+[[menu.main]]
+  name = "random"
+  url = "/random/"
+  weight = 4
+
+[[menu.main]]
+  name = "contact"
+  url = "/contact/"
+  weight = 5
+
+[[menu.main]]
+  name = "archives"
+  url = "/archives/"
+  weight = 6
+
+[[menu.main]]
+  name = "tags"
+  url = "/tags/"
+  weight = 7
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

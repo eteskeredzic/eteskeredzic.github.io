@@ -1,0 +1,70 @@
+<div class="references-section">
+  <h2>References</h2>
+  <div class="references-container"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Collect all sidenote references and move them to the references section
+  const referencesContainer = document.querySelector('.references-container');
+  const sidenoteReferences = document.querySelectorAll('.sidenote-reference');
+
+  if (referencesContainer && sidenoteReferences.length > 0) {
+    sidenoteReferences.forEach(function(ref, index) {
+      // Clone the reference
+      const clonedRef = ref.cloneNode(true);
+
+      // Get the reference number from data-ref attribute or use index + 1
+      const refNumber = ref.getAttribute('data-ref') || (index + 1);
+
+      // Update the ID to avoid conflicts
+      clonedRef.id = 'ref-' + refNumber;
+
+      // Manually set the number in the ::before pseudo-element content
+      // We'll prepend a span with the number instead
+      const numberSpan = document.createElement('span');
+      numberSpan.style.fontWeight = '700';
+      numberSpan.style.color = 'var(--primary)';
+      numberSpan.textContent = (index + 1) + '. ';
+      clonedRef.insertBefore(numberSpan, clonedRef.firstChild);
+
+      // Append to references container
+      referencesContainer.appendChild(clonedRef);
+    });
+  }
+
+  // Add smooth scroll behavior for desktop sidenote links
+  document.querySelectorAll('.sidenote-number-desktop').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        // Scroll to the element
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Trigger wobble animation by adding and removing a class
+        targetElement.classList.add('wobble-animation');
+        setTimeout(function() {
+          targetElement.classList.remove('wobble-animation');
+        }, 500);
+      }
+    });
+  });
+
+  // Add smooth scroll behavior for mobile reference links
+  document.querySelectorAll('.sidenote-number-mobile').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        // Scroll to the element
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
+</script>
