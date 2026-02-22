@@ -23,18 +23,18 @@ Big fan of **Sci-Fi** and **retro gaming**.
 ## Work experience
 
 {{< timeline-container >}}
-<!--
+
 {{< timeline-item title="Senior AI Software Engineer @ Infobip" date="03/2026 - present" company="www.infobip.com" url="https://www.infobip.com" >}}
 
 **Large-scale system design, with a focus on taking AI systems from research to production.**
 
-- Architected scalable, production-grade AI microservices;
+- Architected scalable, production-grade AI software systems;
 - Established foundational ML infrastructure and standards;
 - Designed and built shared ML tooling and core libraries, setting common patterns for deployment, observability, experimentation, and platform integration across teams;
 - Set direction for applied R&D, guiding what we research, publish, and ship into production and external talks;
 
 {{< /timeline-item >}}
--->
+
 {{< timeline-item title="AI Software Engineer @ Infobip" date="05/2024 - 03/2026" company="www.infobip.com" url="https://www.infobip.com" >}}
 
 My work mostly revolves around the **intersection** of **AI, Software Engineering**, and **System Design.**
