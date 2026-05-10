@@ -1,1 +1,159 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tags on Edvin Teskeredzic</title><link>https://eteskeredzic.github.io/tags/</link><description>Recent content in Tags on Edvin Teskeredzic</description><generator>Hugo -- 0.161.0</generator><language>en-us</language><lastBuildDate>Wed, 28 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://eteskeredzic.github.io/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>Combinatorics</title><link>https://eteskeredzic.github.io/tags/combinatorics/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/combinatorics/</guid><description/></item><item><title>Data Analysis</title><link>https://eteskeredzic.github.io/tags/data-analysis/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/data-analysis/</guid><description/></item><item><title>Dota 2</title><link>https://eteskeredzic.github.io/tags/dota-2/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/dota-2/</guid><description/></item><item><title>Gaming</title><link>https://eteskeredzic.github.io/tags/gaming/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/gaming/</guid><description/></item><item><title>Mathematics</title><link>https://eteskeredzic.github.io/tags/mathematics/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/mathematics/</guid><description/></item><item><title>Python</title><link>https://eteskeredzic.github.io/tags/python/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/python/</guid><description/></item><item><title>Tech</title><link>https://eteskeredzic.github.io/tags/tech/</link><pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/tech/</guid><description/></item><item><title>Devex</title><link>https://eteskeredzic.github.io/tags/devex/</link><pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/devex/</guid><description/></item><item><title>External</title><link>https://eteskeredzic.github.io/tags/external/</link><pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/external/</guid><description/></item><item><title>Uv</title><link>https://eteskeredzic.github.io/tags/uv/</link><pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/uv/</guid><description/></item><item><title>AI</title><link>https://eteskeredzic.github.io/tags/ai/</link><pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/ai/</guid><description/></item><item><title>Backdoor Training</title><link>https://eteskeredzic.github.io/tags/backdoor-training/</link><pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/backdoor-training/</guid><description/></item><item><title>Deep Learning</title><link>https://eteskeredzic.github.io/tags/deep-learning/</link><pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/deep-learning/</guid><description/></item><item><title>Neural Networks</title><link>https://eteskeredzic.github.io/tags/neural-networks/</link><pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/neural-networks/</guid><description/></item><item><title>Security</title><link>https://eteskeredzic.github.io/tags/security/</link><pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate><guid>https://eteskeredzic.github.io/tags/security/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on Edvin Teskeredzic</title>
+    <link>https://eteskeredzic.github.io/tags/</link>
+    <description>Recent content in Tags on Edvin Teskeredzic</description>
+    <generator>Hugo -- 0.161.1</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://eteskeredzic.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Analysis</title>
+      <link>https://eteskeredzic.github.io/tags/data-analysis/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/data-analysis/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gaming</title>
+      <link>https://eteskeredzic.github.io/tags/gaming/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/gaming/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Nlp</title>
+      <link>https://eteskeredzic.github.io/tags/nlp/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/nlp/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Optimization</title>
+      <link>https://eteskeredzic.github.io/tags/optimization/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/optimization/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Python</title>
+      <link>https://eteskeredzic.github.io/tags/python/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Spelling-Bee</title>
+      <link>https://eteskeredzic.github.io/tags/spelling-bee/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/spelling-bee/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tech</title>
+      <link>https://eteskeredzic.github.io/tags/tech/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/tech/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Word-Frequency</title>
+      <link>https://eteskeredzic.github.io/tags/word-frequency/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/word-frequency/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Wordnet</title>
+      <link>https://eteskeredzic.github.io/tags/wordnet/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/wordnet/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Zipf</title>
+      <link>https://eteskeredzic.github.io/tags/zipf/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/zipf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Combinatorics</title>
+      <link>https://eteskeredzic.github.io/tags/combinatorics/</link>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/combinatorics/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Dota 2</title>
+      <link>https://eteskeredzic.github.io/tags/dota-2/</link>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/dota-2/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mathematics</title>
+      <link>https://eteskeredzic.github.io/tags/mathematics/</link>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/mathematics/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Devex</title>
+      <link>https://eteskeredzic.github.io/tags/devex/</link>
+      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/devex/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>External</title>
+      <link>https://eteskeredzic.github.io/tags/external/</link>
+      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/external/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Uv</title>
+      <link>https://eteskeredzic.github.io/tags/uv/</link>
+      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/uv/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AI</title>
+      <link>https://eteskeredzic.github.io/tags/ai/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/ai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Backdoor Training</title>
+      <link>https://eteskeredzic.github.io/tags/backdoor-training/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/backdoor-training/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Deep Learning</title>
+      <link>https://eteskeredzic.github.io/tags/deep-learning/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Neural Networks</title>
+      <link>https://eteskeredzic.github.io/tags/neural-networks/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/neural-networks/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Security</title>
+      <link>https://eteskeredzic.github.io/tags/security/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/security/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>NYT Spelling Bee: Dissected, Optimized, and Overthought | Edvin Teskeredzic</title>
+<meta name="keywords" content="tech, spelling-bee, zipf, word-frequency, optimization, nlp, python, data analysis, gaming, wordnet">
+<meta name="description" content="What happens when engineers play NYT Spelling Bee on their lunch break? Statistical analysis, obviously.">
+<meta name="author" content="Edvin Teskeredzic">
+<link rel="canonical" href="https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0287da72a1a9bf0bfb60fa26cd400ab24142d4ed62d7cb2ef3db96f01e7696f7.css" integrity="sha256-AofacqGpvwv7YPomzUAKskFC1O1i18su89uW8B52lvc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://eteskeredzic.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://eteskeredzic.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+<meta property="og:url" content="https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/">
+  <meta property="og:site_name" content="Edvin Teskeredzic">
+  <meta property="og:title" content="NYT Spelling Bee: Dissected, Optimized, and Overthought">
+  <meta property="og:description" content="What happens when engineers play NYT Spelling Bee on their lunch break? Statistical analysis, obviously.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-05-09T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-05-09T00:00:00+00:00">
+    <meta property="article:tag" content="Tech">
+    <meta property="article:tag" content="Spelling-Bee">
+    <meta property="article:tag" content="Zipf">
+    <meta property="article:tag" content="Word-Frequency">
+    <meta property="article:tag" content="Optimization">
+    <meta property="article:tag" content="Nlp">
+      <meta property="og:image" content="https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/cover.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NYT Spelling Bee: Dissected, Optimized, and Overthought">
+<meta name="twitter:description" content="What happens when engineers play NYT Spelling Bee on their lunch break? Statistical analysis, obviously.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "posts",
+      "item": "https://eteskeredzic.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "NYT Spelling Bee: Dissected, Optimized, and Overthought",
+      "item": "https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "NYT Spelling Bee: Dissected, Optimized, and Overthought",
+  "name": "NYT Spelling Bee: Dissected, Optimized, and Overthought",
+  "description": "What happens when engineers play NYT Spelling Bee on their lunch break? Statistical analysis, obviously.",
+  "keywords": [
+    "tech", "spelling-bee", "zipf", "word-frequency", "optimization", "nlp", "python", "data analysis", "gaming", "wordnet"
+  ],
+  "articleBody": "During lunch breaks (or any breaks for that matter), it’s usually not enough to discuss nerd stuff with my colleagues. Oh no, we have to take it up a notch, so naturally we play puzzle games while on our break. One of our all-time favorites is the daily New York Times (NYT) Spelling Bee https://www.nytimes.com/puzzles/spelling-bee\rhttps://www.nytimes.com/puzzles/spelling-bee\r.\nIt’s a game with simple rules: Every day, you get presented with an assortment of 7 distinct letters, arranged in a honeycomb-like pattern (one letter in the middle, and 6 surrounding it). The goal of the game is to come up with as many words using the 7 letters, with some additional limitations:\nWords must have at least 4 letters Words must contain the central letter You’re free to repeat letters as many times as you want, as long as you adhere to the two limitations. For each word you can find, you get rewarded points: 4-letter words give one point, while longer words give as many points as they are long. There is, however, one more special rule: Words that contain all 7 letters at least once (so-called pangrams) give a special bonus of 7 points. Here’s an example:\nFor this configuration, your goal would be to use these 7 letters to come up with as many words of length 4 or more, which must contain the letter B. There’s also one more thing I didn’t tell you: NYT Spelling Bee puzzles always contain at least one pangram!\nNow that we’ve got all the rules and limitations in place, we’re gonna do what any engineer would:\nWhich 7 letter-configuration yields the highest (theoretically) possible score?\rWhat is a word? In order to find the limits of Spelling Bee, we first have to know what exactly a word is. Is ship a word? Obviously yes. How about shipping? Again yes (adding -ing is actually a common pattern to generate more words). How about coracoprocoracoid\rA medical term I will not even pretend to understand.\rA medical term I will not even pretend to understand.\ror Brazil? While these are technically words, you would not be able to use them in Spelling Bee - the first one because it is too specialized and obscure, and the second one because it is a proper noun Nouns which are names for a particular person, place, organization, or thing. They are always capitalized.\rNouns which are names for a particular person, place, organization, or thing. They are always capitalized.\r.\nSo, for starters, we can’t get points for any word. It has to be reasonably well-known (which does not mean common - only excluding ultra-obscure words) and cannot be the name of a place, person, company, etc.\nBut first, we’ll actually need some words to begin with, which leads us to step 1 of any experiment - data collection!\nGetting a dictionary I’ve tried to find out if the people that come up with the daily puzzle have disclosed which dictionary they use, however with no luck. So, our best guess is to just get the most well-known dictionaries and use those as sources of truth. To my knowledge, the leading English dictionaries are the New Oxford American Dictionary and the Merriam-Webster Dictionary. However, in order to access these datasets, you need to pay a fee (spoiler: this ain’t happening).\nSo, instead of paying the mega-corporations, we’ll find a free and open-source alternative. After some googling, I’ve found the english-words Github repo, containing 479k words\rhttps://github.com/dwyl/english-words\rhttps://github.com/dwyl/english-words\r. That’ll do.\nNow, we can start doing some Python-powered counting!\nPangrams, counts, and NLP With a proper dataset of English words, we can easily calculate the total number of possible Spelling Bee game boards - just extract all pangrams, and multiply that number by 7 (because each pangram yields 7 possible boards, with the difference being the center letter).\ndef filter_pangrams(words: dict) -\u003e list[str]: pangrams = [] for key in words.keys(): if len(set(key)) == 7: pangrams.append(key) return pangrams This gives us a nice list of 74263 pangrams and 519841 possible Spelling Bee game boards. However, this is not quite true. This list of pangrams includes some really obscure pangrams, for example aasvogel\rAn obsolete Afrikaans word for vulture, technically part of the Merriam-Webster English dictionary.\rAn obsolete Afrikaans word for vulture, technically part of the Merriam-Webster English dictionary.\r. It also includes proper nouns, like Belgium.\nWe’ll have to trim down this list of pangrams. Let’s first solve the problem of proper nouns.\nEnter WordNet WordNet is a large lexical database of English\rhttps://wordnet.princeton.edu/\rhttps://wordnet.princeton.edu/\r. It’s a project by Princeton University, which is no longer under active development. However, it remains free to use. On the surface, it might seem like WordNet is just a dataset of words (like the one we downloaded), however it’s much more than that:\nInside of WordNet, words are grouped by their synonymity, into groups of words which denote the same concept. These groups are called synsets. There’s 117 000 of them in WordNet, and they are linked between each other through conceptual relations between the synsets. This is done by connecting more general synsets (like furniture) to increasingly specific ones (like bed).\nThe neat thing is that WordNet introduces two concepts: types and instances. Types refer to any common noun, while instances are proper nouns. For example, yacht is a type of ship, while Titanic is an instance of ship. We can use this property of WordNet to easily filter out our proper nouns:\ndef is_proper_noun(word) -\u003e bool: synsets = wn.synsets(word) if not synsets: return False # not in WordNet at all if all(s.instance_hypernyms() for s in synsets): return True if word in (country.name.lower() for country in pycountry.countries): return False # Catch personal names not in WordNet (e.g. \"liam\", \"emma\") if word in NAME_SET: return True return False Here, the all is important for words which are both proper and common nouns (for example, the word jordan can be a country name, as well as a chamber pot). In addition, I’ve used the pycountry package as a safeguard for dual-use words, like the aforementioned jordan.\nGreat, we’ve deleted most of the proper nouns from our word list. Now what remains is deleting ultra-obscure words - and this is where Zipf’s law can help us.\nZipf’s law and obscure words If you’ve ever dabbled in statistics, you’re probably familiar with Zipf’s law\rAs with many laws, Zipf wasn’t actually the one who came up with it first.\rAs with many laws, Zipf wasn’t actually the one who came up with it first.\r:\nWhen a set of measured values is sorted in decreasing order, the value of the nth entry is often approximately inversely proportional to n.\rAnd this is especially true for large corpora of words: The most common words occur approximately twice as often as the next most common one, three times as often as the third one, and so on.\nThis law got later turned into a logarithmic frequency scale (proposed by Marc Brysbaert). The goal is to map reasonable word frequencies to small positive numbers.\nA word rates x on the Zipf scale when it occurs 10x times per one billion words. For example, a word that occurs once per million words is at 3.0 on the Zipf scale. A lower number indicates rarer words, with the value of 0 being words that appear once per one billion words, or less.\nThe Python package wordfreq implements the Zipf frequency - it’s basically just a collection of statistical data for many different corpora of languages.\nSo, in order to filter out some really obscure words, we can just take the Zipf frequency, and discard all words which are below a given threshold:\nfrom wordfreq import zipf_frequency # Must be reasonably common if zipf_frequency(word, 'en') \u003c THRESHOLD: return False With this, we’ve solved both proper nouns and obscure words. Now we can move on to producing some actual insights!\nExploring Spelling Bee Everything is in place, let’s jump straight into analysis. All of this can be easily combined into a Python script with a couple of simple steps: Algorithm Optimal Spelling Bee Board Generator Extract pangrams Remove proper nouns using WordNet Remove obscure words using Zipf’s law For each pangram and middle letter configuration: Find which words from the original dataset can be constructed using the pangram letters, containing the center letter Calculate score based on the found words Return all boards with their best games All of these steps are easily implemented in Python.\nNote: While the code for the described algorithm is trivial, I’ve used one trick to make my life a bit easier: Step 4 is sped up using multiprocessing, specifically the Pool.imap() function in order to assign pangram calculations to parallel workers based on the number of available CPU cores. It’s embarrassingly parallel, so the effort to implement is minimal but the gains in execution speed are substantial. Best games and longest words After implementing this simple algorithm, and trying it out with a few different Zipf’s frequencies (ZF), here’s what we get:\nExclude Prop. Nouns ZF # of pangrams # of valid words Longest word Best board Best score No 0 74263 367517 humuhumunukunukuapuaa anestri 13377 Yes 0 24364 107907 coccidioidomycosis antisera 5670 Yes 1 16667 76053 coccidioidomycosis antisera 4030 Yes 2 10350 48382 inconsistencies artesian 2588 Yes 3 4378 21361 inconsistencies scattered 1291 Yes 4 990 5872 consciousness desperate 515 Yes 4.5 352 2480 entertainment characters 268 Yes 5 80 803 association interesting 81 Note: for every best board, the letter e is the best central letter. This is not surprising, given that e is the most common letter in the English language. Well, there you have it! Allowing every possible word to be valid, the longest pangram we get is a whopping 21 characters long - humuhumunukunukuapuaa - the Hawaiian name for the Reef triggerfish\rFunnily enough, also the name of a song in the movie High School Musical 2: https://www.youtube.com/watch?v=30OwdMs4E9A\rFunnily enough, also the name of a song in the movie High School Musical 2: https://www.youtube.com/watch?v=30OwdMs4E9A\r.\nIf we tighten the rules a bit, using larger and larger Zipf frequencies (and thus allowing only more common words to be valid), we progressively decrease the best possible score.\nPersonally, it seems like 4-4.5 would be a good value for the Zipf frequency threshold in order to get something similar to the NYT Spelling Bee game. Here’s the full list of words for the case of ZF=4 - the theoretical game with the pangram desperate and the letter e as the center letter:\nFull word list for pangram desperate with center letter e (Pangrams denoted with *)\nWord Length ZF Points addressed 9 4.26 9 addresses 9 4.13 9 depressed 9 4.14 9 desperate* 9 4.32 16 separated* 9 4.3 16 appeared 8 4.83 8 arrested 8 4.64 8 prepared 8 4.74 8 repeated 8 4.28 8 separate 8 4.83 8 stressed 8 4.18 8 adapted 7 4.17 7 address 7 4.91 7 appears 7 4.84 7 dressed 7 4.42 7 dresses 7 4.05 7 prepare 7 4.55 7 pressed 7 4.12 7 readers 7 4.41 7 retreat 7 4.13 7 started 7 5.39 7 starter 7 4.02 7 stepped 7 4.2 7 streets 7 4.66 7 trapped 7 4.19 7 treated 7 4.71 7 appear 6 4.85 6 arrest 6 4.55 6 assess 6 4.07 6 assets 6 4.56 6 deeper 6 4.3 6 desert 6 4.4 6 estate 6 4.82 6 papers 6 4.61 6 parade 6 4.16 6 passed 6 4.92 6 passes 6 4.45 6 pepper 6 4.14 6 reader 6 4.34 6 repeat 6 4.49 6 speeds 6 4.05 6 spread 6 4.81 6 stated 6 4.74 6 states 6 5.52 6 street 6 5.28 6 stress 6 4.73 6 tastes 6 4.08 6 tested 6 4.48 6 traded 6 4.15 6 trades 6 4.04 6 treats 6 4.06 6 added 5 5.16 5 areas 5 5.15 5 asset 5 4.23 5 dated 5 4.29 5 dates 5 4.54 5 dress 5 4.76 5 paper 5 5.07 5 peers 5 4.02 5 press 5 5.16 5 raped 5 4.08 5 rated 5 4.3 5 rates 5 4.88 5 reads 5 4.25 5 seats 5 4.53 5 seeds 5 4.28 5 spare 5 4.28 5 speed 5 5.0 5 state 5 5.78 5 steps 5 4.73 5 taste 5 4.73 5 tears 5 4.47 5 tests 5 4.67 5 trade 5 5.12 5 treat 5 4.75 5 trees 5 4.69 5 area 4 5.46 1 dare 4 4.31 1 date 4 5.22 1 dead 4 5.19 1 dear 4 4.77 1 deep 4 5.05 1 deer 4 4.12 1 ears 4 4.36 1 ease 4 4.34 1 east 4 5.16 1 peer 4 4.14 1 pets 4 4.08 1 rape 4 4.48 1 rare 4 4.77 1 rate 4 5.14 1 read 4 5.54 1 rear 4 4.43 1 rest 4 5.23 1 seat 4 4.82 1 seed 4 4.37 1 sees 4 4.59 1 sept 4 4.35 1 sets 4 4.69 1 step 4 5.13 1 tape 4 4.44 1 tear 4 4.35 1 test 4 5.19 1 tree 4 4.85 1 TOTAL 515 Beyond a raw score, another way we can look at the data is finding the games which have the most pangrams. Here’s a list of them, for different Zipf thresholds (obviously, ties exist so I’ve just picked the first result for each ZF):\nZipf threshold Pangram Center letter # pangrams 2 artesian e 27 3 argentine r 12 4 accident a 4 4.5 actions o 3 5 include i 2 Note: Here, argentine does not refer to the country of Argentina (which would make it a proper noun), but rather it is a synonym for silver or silvery. Worst games After taking a look at the best and most satisfying games, which yield high scores and multiple pangrams, we can also flip the script and find the absolute bottom of the barrel: games with only one 7-letter pangram! These games are easy to find, as the maximum score you can have here is 14 (7 points for a 7 letter word, plus an additional 7 points for the pangram bonus) - this is also the minimum amount of points one can have in a “valid” Spelling Bee game.\nZipf threshold Pangram Center letter 2 azimuth z 3 jukebox x 4 injured j 4.5 various * 5 century y For ZF=4.5, this is actually an interesting result: the pangram various delivers a dead-end game regardless of the center letter!\nHere are also some games with complete solutions consisting of two words (max score is 15):\nZipf threshold Pangram Center letter Other word 2 mitzvah v viii\rThe Roman numeral for 8.\rThe Roman numeral for 8.\r3 jumping j jump 4 anxious x axis 4.5 f*cking f f*ck For some reason I think this game will not pass NYT quality control.\rFor some reason I think this game will not pass NYT quality control.\r5 picture r true Game score distributions Since we have all of this data, we can also look at the game score distributions across all pangrams (considering only the best possible center letter for each pangram) for the different Zipf frequencies. To that end, I’ve made an interactive chart you can play around with:\nNote: The NYT-like band (50-300 - these are arbitrarily chosen based on my experience with the game) suggests a Zipf threshold of around 4-4.5 as the sweet spot for generating a game. It’s still strict enough to keep ultra-obscure words out, while at the same time offering some challenging games. Conclusion - This game is the bees knees! It turns out that you can do something that’s even more nerdy than playing NYT Spelling Bee - spending your free time reverse-engineering it.\nDoes any of this help us win at Spelling Bee? Not really - turns out knowing the theoretical limits of this game doesn’t help you find the words faster. But, the next time I spend my lunch break playing, I’ll at least know that somewhere out there, there’s a Hawaiian fish worth 28 points - and that the NYT will never let me use it.\nAnd finally, to answer our initial question:\nThe highest possible Spelling Bee score: 515 points, the pangram is desperate, and the central letter is e. Completely useless information? Yes. Absolutely worth the hassle? Also yes.\rAddendum: Download the data If you want to play around with this data yourself, I’m putting the datasets for Zipf 2 and above up for download:\nspelling_bee_datasets.zip 11.7 MB ",
+  "wordCount" : "2762",
+  "inLanguage": "en",
+  "datePublished": "2026-05-09T00:00:00Z",
+  "dateModified": "2026-05-09T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Edvin Teskeredzic"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eteskeredzic.github.io/posts/nyt-spelling-bee-dissected-optimized-overthought/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Edvin Teskeredzic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eteskeredzic.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://eteskeredzic.github.io/" accesskey="h" title="Edvin Teskeredzic (Alt + H)">Edvin Teskeredzic</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://eteskeredzic.github.io/whoami/" title="whoami">
+                    <span>whoami</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/contact/" title="contact">
+                    <span>contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/archives/" title="archives">
+                    <span>archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://eteskeredzic.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://eteskeredzic.github.io/posts/">posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      NYT Spelling Bee: Dissected, Optimized, and Overthought
+    </h1>
+    <div class="post-description">
+      What happens when engineers play NYT Spelling Bee on their lunch break? Statistical analysis, obviously.
+    </div>
+    <div class="post-meta"><span title='2026-05-09 00:00:00 +0000 UTC'>May 9, 2026</span>&nbsp;·&nbsp;<span>13 min</span>&nbsp;·&nbsp;<span>2762 words</span>&nbsp;·&nbsp;<span>Edvin Teskeredzic</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#what-is-a-word" aria-label="What is a word?">What is a word?</a></li>
+                <li>
+                    <a href="#getting-a-dictionary" aria-label="Getting a dictionary">Getting a dictionary</a></li>
+                <li>
+                    <a href="#pangrams-counts-and-nlp" aria-label="Pangrams, counts, and NLP">Pangrams, counts, and NLP</a><ul>
+                        
+                <li>
+                    <a href="#enter-wordnet" aria-label="Enter WordNet">Enter WordNet</a></li>
+                <li>
+                    <a href="#zipfs-law-and-obscure-words" aria-label="Zipf&rsquo;s law and obscure words">Zipf&rsquo;s law and obscure words</a></li></ul>
+                </li>
+                <li>
+                    <a href="#exploring-spelling-bee" aria-label="Exploring Spelling Bee">Exploring Spelling Bee</a><ul>
+                        
+                <li>
+                    <a href="#best-games-and-longest-words" aria-label="Best games and longest words">Best games and longest words</a></li>
+                <li>
+                    <a href="#worst-games" aria-label="Worst games">Worst games</a></li>
+                <li>
+                    <a href="#game-score-distributions" aria-label="Game score distributions">Game score distributions</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion---this-game-is-the-bees-knees" aria-label="Conclusion - This game is the bees knees!">Conclusion - This game is the bees knees!</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>During lunch breaks (or any breaks for that matter), it&rsquo;s usually not enough to discuss nerd stuff with my colleagues. Oh no, we have to take it up a notch, so naturally we play puzzle games while on our break. One of our all-time favorites is the daily <strong><em>New York Times (NYT) Spelling Bee</em></strong> 
+
+
+<a href="#ref-0" class="sidenote-number sidenote-number-mobile" aria-label="Reference 0"></a>
+<a href="#sn-0" class="sidenote-number sidenote-number-desktop" aria-label="Reference 0"></a>
+<span class="sidenote" id="sn-0"><a href="https://www.nytimes.com/puzzles/spelling-bee" target="_blank" rel="noopener noreferrer">https://www.nytimes.com/puzzles/spelling-bee</a></span>
+<span class="sidenote-reference" id="ref-0" data-ref="0"><a href="https://www.nytimes.com/puzzles/spelling-bee" target="_blank" rel="noopener noreferrer">https://www.nytimes.com/puzzles/spelling-bee</a></span>
+.</p>
+<img src="/posts/nyt-spelling-bee-dissected-optimized-overthought/cover.png" alt="Cover image"   style="display: block; margin: 0 auto; margin-bottom: 1rem; border: 1px solid var(--img-border-color); border-radius: 8px; box-shadow: var(--img-box-shadow); background-color: white;">
+
+<p>It&rsquo;s a game with simple rules: Every day, you get presented with an assortment of 7 distinct letters, arranged in a honeycomb-like pattern (one letter in the middle, and 6 surrounding it). The goal of the game is to come up with as many words using the 7 letters, with some additional limitations:</p>
+<ol>
+<li>Words must have at least 4 letters</li>
+<li>Words must contain the central letter</li>
+</ol>
+<p>You&rsquo;re free to repeat letters as many times as you want, as long as you adhere to the two limitations. For each word you can find, you get rewarded points: 4-letter words give one point, while longer words give as many points as they are long. There is, however, one more special rule: <strong><em>Words that contain all 7 letters at least once (so-called pangrams) give a special bonus of 7 points</em></strong>. Here&rsquo;s an example:</p>
+<img src="/posts/nyt-spelling-bee-dissected-optimized-overthought/spelling_bee_example.png" alt="Spelling Bee example" width="400"  style="display: block; margin: 0 auto; margin-bottom: 1rem; border: 1px solid var(--img-border-color); border-radius: 8px; box-shadow: var(--img-box-shadow); background-color: white;">
+
+<p>For this configuration, your goal would be to use these 7 letters to come up with as many words of length 4 or more, which must contain the letter B. There&rsquo;s also one more thing I didn&rsquo;t tell you: <strong>NYT Spelling Bee puzzles always contain at least one pangram!</strong></p>
+<p>Now that we&rsquo;ve got all the rules and limitations in place, we&rsquo;re gonna do what any engineer would:</p>
+<blockquote class="centered-quote">
+  Which 7 letter-configuration yields the highest (theoretically) possible score?
+</blockquote>
+
+<h2 id="what-is-a-word">What is a word?<a hidden class="anchor" aria-hidden="true" href="#what-is-a-word">#</a></h2>
+<p>In order to find the limits of Spelling Bee, we first have to know <em>what</em> exactly a word is. Is <code>ship</code> a word? Obviously yes. How about <code>shipping</code>? Again yes (adding <code>-ing</code> is actually a common pattern to generate more words). How about <code>coracoprocoracoid</code>
+
+
+<a href="#ref-4" class="sidenote-number sidenote-number-mobile" aria-label="Reference 4"></a>
+<a href="#sn-4" class="sidenote-number sidenote-number-desktop" aria-label="Reference 4"></a>
+<span class="sidenote" id="sn-4">A medical term I will not even pretend to understand.</span>
+<span class="sidenote-reference" id="ref-4" data-ref="4">A medical term I will not even pretend to understand.</span>
+ or <code>Brazil</code>? While these are <em>technically</em> words, you would not be able to use them in Spelling Bee - the first one because it is too specialized and obscure, and the second one because it is a <em>proper noun</em> 
+
+
+<a href="#ref-5" class="sidenote-number sidenote-number-mobile" aria-label="Reference 5"></a>
+<a href="#sn-5" class="sidenote-number sidenote-number-desktop" aria-label="Reference 5"></a>
+<span class="sidenote" id="sn-5">Nouns which are names for a particular person, place, organization, or thing. They are always capitalized.</span>
+<span class="sidenote-reference" id="ref-5" data-ref="5">Nouns which are names for a particular person, place, organization, or thing. They are always capitalized.</span>
+.</p>
+<p>So, for starters, we can&rsquo;t get points for <em>any</em> word. It has to be reasonably well-known (which does not mean common - only excluding ultra-obscure words) and cannot be the name of a place, person, company, etc.</p>
+<p>But first, we&rsquo;ll actually need some words to begin with, which leads us to <strong><em>step 1 of any experiment - data collection!</em></strong></p>
+<h2 id="getting-a-dictionary">Getting a dictionary<a hidden class="anchor" aria-hidden="true" href="#getting-a-dictionary">#</a></h2>
+<p>I&rsquo;ve tried to find out if the people that come up with the daily puzzle have disclosed which dictionary they use, however with no luck. So, our best guess is to just get the most well-known dictionaries and use those as sources of truth. To my knowledge, the leading English dictionaries are the <em>New Oxford American Dictionary</em> and the <em>Merriam-Webster Dictionary</em>. However, in order to access these datasets, you need to pay a fee (spoiler: this ain&rsquo;t happening).</p>
+<p>So, instead of paying the mega-corporations, we&rsquo;ll find a <strong><em>free and open-source</em></strong> alternative. After some googling, I&rsquo;ve found the <strong><em>english-words</em></strong> Github repo, containing 479k words
+
+
+<a href="#ref-6" class="sidenote-number sidenote-number-mobile" aria-label="Reference 6"></a>
+<a href="#sn-6" class="sidenote-number sidenote-number-desktop" aria-label="Reference 6"></a>
+<span class="sidenote" id="sn-6"><a href="https://github.com/dwyl/english-words" target="_blank" rel="noopener noreferrer">https://github.com/dwyl/english-words</a></span>
+<span class="sidenote-reference" id="ref-6" data-ref="6"><a href="https://github.com/dwyl/english-words" target="_blank" rel="noopener noreferrer">https://github.com/dwyl/english-words</a></span>
+. That&rsquo;ll do.</p>
+<p><strong><em>Now, we can start doing some Python-powered counting!</em></strong></p>
+<h2 id="pangrams-counts-and-nlp">Pangrams, counts, and NLP<a hidden class="anchor" aria-hidden="true" href="#pangrams-counts-and-nlp">#</a></h2>
+<p>With a proper dataset of English words, we can easily calculate the total number of possible Spelling Bee game boards - just extract all pangrams, and multiply that number by 7 (because each pangram yields 7 possible boards, with the difference being the center letter).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">filter_pangrams</span>(words: dict) <span style="color:#f92672">-&gt;</span> list[str]:
+</span></span><span style="display:flex;"><span>    pangrams <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> key <span style="color:#f92672">in</span> words<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> len(set(key)) <span style="color:#f92672">==</span> <span style="color:#ae81ff">7</span>:
+</span></span><span style="display:flex;"><span>          pangrams<span style="color:#f92672">.</span>append(key)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> pangrams
+</span></span></code></pre></div><p>This gives us a nice list of <strong>74263</strong> pangrams and <strong>519841</strong> possible Spelling Bee game boards. However, this is not quite true. This list of pangrams includes some really obscure pangrams, for example <code>aasvogel</code>
+
+
+<a href="#ref-7" class="sidenote-number sidenote-number-mobile" aria-label="Reference 7"></a>
+<a href="#sn-7" class="sidenote-number sidenote-number-desktop" aria-label="Reference 7"></a>
+<span class="sidenote" id="sn-7">An obsolete Afrikaans word for vulture, technically part of the Merriam-Webster English dictionary.</span>
+<span class="sidenote-reference" id="ref-7" data-ref="7">An obsolete Afrikaans word for vulture, technically part of the Merriam-Webster English dictionary.</span>
+. It also includes proper nouns, like <code>Belgium</code>.</p>
+<p>We&rsquo;ll have to trim down this list of pangrams. Let&rsquo;s first solve the problem of proper nouns.</p>
+<h3 id="enter-wordnet">Enter WordNet<a hidden class="anchor" aria-hidden="true" href="#enter-wordnet">#</a></h3>
+<p>WordNet is a large lexical database of English
+
+
+<a href="#ref-8" class="sidenote-number sidenote-number-mobile" aria-label="Reference 8"></a>
+<a href="#sn-8" class="sidenote-number sidenote-number-desktop" aria-label="Reference 8"></a>
+<span class="sidenote" id="sn-8"><a href="https://wordnet.princeton.edu/" target="_blank" rel="noopener noreferrer">https://wordnet.princeton.edu/</a></span>
+<span class="sidenote-reference" id="ref-8" data-ref="8"><a href="https://wordnet.princeton.edu/" target="_blank" rel="noopener noreferrer">https://wordnet.princeton.edu/</a></span>
+. It&rsquo;s a project by Princeton University, which is no longer under active development. However, it remains free to use. On the surface, it might seem like WordNet is just a dataset of words (like the one we downloaded), however it&rsquo;s much more than that:</p>
+<p>Inside of WordNet, words are grouped by their synonymity, into groups of words which denote the same concept. These groups are called <strong><em>synsets</em></strong>. There&rsquo;s 117 000 of them in WordNet, and they are linked between each other through conceptual relations between the synsets. This is done by connecting more general synsets (like <code>furniture</code>) to increasingly specific ones (like <code>bed</code>).</p>
+<p>The neat thing is that WordNet introduces two concepts: <strong><em>types and instances</em></strong>. Types refer to any common noun, while instances are proper nouns. For example, <code>yacht</code> is a <em>type</em> of <code>ship</code>, while <code>Titanic</code> is an <em>instance</em> of <code>ship</code>. We can use this property of WordNet to easily filter out our proper nouns:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_proper_noun</span>(word) <span style="color:#f92672">-&gt;</span> bool:
+</span></span><span style="display:flex;"><span>    synsets <span style="color:#f92672">=</span> wn<span style="color:#f92672">.</span>synsets(word)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> synsets:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>  <span style="color:#75715e"># not in WordNet at all</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> all(s<span style="color:#f92672">.</span>instance_hypernyms() <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> synsets):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> (country<span style="color:#f92672">.</span>name<span style="color:#f92672">.</span>lower() <span style="color:#66d9ef">for</span> country <span style="color:#f92672">in</span> pycountry<span style="color:#f92672">.</span>countries):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Catch personal names not in WordNet (e.g. &#34;liam&#34;, &#34;emma&#34;)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> NAME_SET:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><p>Here, the <code>all</code> is important for words which are <em>both</em> proper and common nouns (for example, the word <code>jordan</code> can be a country name, as well as a chamber pot). In addition, I&rsquo;ve used the <code>pycountry</code> package as a safeguard for dual-use words, like the aforementioned <code>jordan</code>.</p>
+<p>Great, we&rsquo;ve deleted most of the proper nouns from our word list. Now what remains is deleting ultra-obscure words - and this is where Zipf&rsquo;s law can help us.</p>
+<h3 id="zipfs-law-and-obscure-words">Zipf&rsquo;s law and obscure words<a hidden class="anchor" aria-hidden="true" href="#zipfs-law-and-obscure-words">#</a></h3>
+<p>If you&rsquo;ve ever dabbled in statistics, you&rsquo;re probably familiar with Zipf&rsquo;s law
+
+
+<a href="#ref-9" class="sidenote-number sidenote-number-mobile" aria-label="Reference 9"></a>
+<a href="#sn-9" class="sidenote-number sidenote-number-desktop" aria-label="Reference 9"></a>
+<span class="sidenote" id="sn-9">As with many laws, Zipf wasn&rsquo;t actually the one who came up with it first.</span>
+<span class="sidenote-reference" id="ref-9" data-ref="9">As with many laws, Zipf wasn&rsquo;t actually the one who came up with it first.</span>
+:</p>
+<blockquote class="centered-quote">
+  When a set of measured values is sorted in decreasing order, the value of the <strong>n<sup>th</sup></strong> entry is often approximately inversely proportional to <strong>n</strong>.
+</blockquote>
+
+<p>And this is especially true for large corpora of words: The most common words occur approximately twice as often as the next most common one, three times as often as the third one, and so on.</p>
+<p>This law got later turned into a logarithmic frequency scale (proposed by Marc Brysbaert). The goal is to map reasonable word frequencies to small positive numbers.</p>
+<p>A word rates <strong><em>x</em></strong> on the Zipf scale when it occurs <strong>10<sup>x</sup></strong> times per one billion words. For example, a word that occurs once per million words is at 3.0 on the Zipf scale. A lower number indicates rarer words, with the value of 0 being words that appear once per one billion words, or less.</p>
+<p>The Python package <code>wordfreq</code> implements the Zipf frequency - it&rsquo;s basically just a collection of statistical data for many different corpora of languages.</p>
+<p>So, in order to filter out some really obscure words, we can just take the Zipf frequency, and discard all words which are below a given threshold:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> wordfreq <span style="color:#f92672">import</span> zipf_frequency
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Must be reasonably common</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> zipf_frequency(word, <span style="color:#e6db74">&#39;en&#39;</span>) <span style="color:#f92672">&lt;</span> THRESHOLD:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><p>With this, we&rsquo;ve solved both proper nouns and obscure words. Now we can move on to producing some actual insights!</p>
+<h2 id="exploring-spelling-bee">Exploring Spelling Bee<a hidden class="anchor" aria-hidden="true" href="#exploring-spelling-bee">#</a></h2>
+<p>Everything is in place, let&rsquo;s jump straight into analysis. All of this can be easily combined into a Python script with a couple of simple steps:
+<div class="algorithm-box">
+  <div class="algorithm-header">
+    <span class="algorithm-label">Algorithm</span>
+    <span class="algorithm-title">Optimal Spelling Bee Board Generator</span>
+  </div>
+  <div class="algorithm-body">
+    <ol>
+<li>Extract pangrams</li>
+<li>Remove proper nouns using WordNet</li>
+<li>Remove obscure words using Zipf&rsquo;s law</li>
+<li>For each pangram and middle letter configuration:
+<ol>
+<li>Find which words from the original dataset can be constructed using the pangram letters, containing the center letter</li>
+<li>Calculate score based on the found words</li>
+</ol>
+</li>
+<li>Return all boards with their best games</li>
+</ol>
+
+  </div>
+</div>
+</p>
+<p>All of these steps are easily implemented in Python.</p>
+<span class="note-box"><strong><em>Note:</em></strong> While the code for the described algorithm is trivial, I&rsquo;ve used one trick to make my life a bit easier: Step 4 is sped up using <code>multiprocessing</code>, specifically the <code>Pool.imap()</code> function in order to assign pangram calculations to parallel workers based on the number of available CPU cores. It&rsquo;s embarrassingly parallel, so the effort to implement is minimal but the gains in execution speed are substantial.</span>
+<h3 id="best-games-and-longest-words">Best games and longest words<a hidden class="anchor" aria-hidden="true" href="#best-games-and-longest-words">#</a></h3>
+<p>After implementing this simple algorithm, and trying it out with a few different Zipf&rsquo;s frequencies (ZF), here&rsquo;s what we get:</p>
+<div class="small-table">
+  <table>
+  <thead>
+      <tr>
+          <th>Exclude Prop. Nouns</th>
+          <th>ZF</th>
+          <th># of pangrams</th>
+          <th># of valid words</th>
+          <th>Longest word</th>
+          <th>Best board</th>
+          <th>Best score</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>No</td>
+          <td>0</td>
+          <td>74263</td>
+          <td>367517</td>
+          <td><code>humuhumunukunukuapuaa</code></td>
+          <td><code>anestri</code></td>
+          <td>13377</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>0</td>
+          <td>24364</td>
+          <td>107907</td>
+          <td><code>coccidioidomycosis</code></td>
+          <td><code>antisera</code></td>
+          <td>5670</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>1</td>
+          <td>16667</td>
+          <td>76053</td>
+          <td><code>coccidioidomycosis</code></td>
+          <td><code>antisera</code></td>
+          <td>4030</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>2</td>
+          <td>10350</td>
+          <td>48382</td>
+          <td><code>inconsistencies</code></td>
+          <td><code>artesian</code></td>
+          <td>2588</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>3</td>
+          <td>4378</td>
+          <td>21361</td>
+          <td><code>inconsistencies</code></td>
+          <td><code>scattered</code></td>
+          <td>1291</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>4</td>
+          <td>990</td>
+          <td>5872</td>
+          <td><code>consciousness</code></td>
+          <td><code>desperate</code></td>
+          <td>515</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>4.5</td>
+          <td>352</td>
+          <td>2480</td>
+          <td><code>entertainment</code></td>
+          <td><code>characters</code></td>
+          <td>268</td>
+      </tr>
+      <tr>
+          <td>Yes</td>
+          <td>5</td>
+          <td>80</td>
+          <td>803</td>
+          <td><code>association</code></td>
+          <td><code>interesting</code></td>
+          <td>81</td>
+      </tr>
+  </tbody>
+</table>
+
+</div>
+
+<span class="note-box"><strong><em>Note:</em></strong> for every best board, the letter <code>e</code> is the best central letter. This is not surprising, given that <code>e</code> is the most common letter in the English language.</span>
+<p>Well, there you have it! Allowing every possible word to be valid, the longest pangram we get is a whopping 21 characters long - <code>humuhumunukunukuapuaa</code> - the Hawaiian name for the Reef triggerfish
+
+
+<a href="#ref-16" class="sidenote-number sidenote-number-mobile" aria-label="Reference 16"></a>
+<a href="#sn-16" class="sidenote-number sidenote-number-desktop" aria-label="Reference 16"></a>
+<span class="sidenote" id="sn-16">Funnily enough, also the name of a song in the movie <em>High School Musical 2</em>: <a href="https://www.youtube.com/watch?v=30OwdMs4E9A" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=30OwdMs4E9A</a></span>
+<span class="sidenote-reference" id="ref-16" data-ref="16">Funnily enough, also the name of a song in the movie <em>High School Musical 2</em>: <a href="https://www.youtube.com/watch?v=30OwdMs4E9A" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=30OwdMs4E9A</a></span>
+.</p>
+<p>If we tighten the rules a bit, using larger and larger Zipf frequencies (and thus allowing only more common words to be valid), we progressively decrease the best possible score.</p>
+<p>Personally, it seems like 4-4.5 would be a good value for the Zipf frequency threshold in order to get something similar to the NYT Spelling Bee game. Here&rsquo;s the full list of words for the case of <code>ZF=4</code> - the theoretical game with the pangram <code>desperate</code> and the letter <code>e</code> as the center letter:</p>
+<details class="dropdown">
+  <summary class="dropdown-summary">Full word list for pangram <code>desperate</code> with center letter <code>e</code></summary>
+  <div class="dropdown-content">
+    <p>(Pangrams denoted with <code>*</code>)</p>
+<table>
+  <thead>
+      <tr>
+          <th>Word</th>
+          <th>Length</th>
+          <th>ZF</th>
+          <th>Points</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>addressed</code></td>
+          <td>9</td>
+          <td>4.26</td>
+          <td>9</td>
+      </tr>
+      <tr>
+          <td><code>addresses</code></td>
+          <td>9</td>
+          <td>4.13</td>
+          <td>9</td>
+      </tr>
+      <tr>
+          <td><code>depressed</code></td>
+          <td>9</td>
+          <td>4.14</td>
+          <td>9</td>
+      </tr>
+      <tr>
+          <td><code>desperate</code>*</td>
+          <td>9</td>
+          <td>4.32</td>
+          <td>16</td>
+      </tr>
+      <tr>
+          <td><code>separated</code>*</td>
+          <td>9</td>
+          <td>4.3</td>
+          <td>16</td>
+      </tr>
+      <tr>
+          <td><code>appeared</code></td>
+          <td>8</td>
+          <td>4.83</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>arrested</code></td>
+          <td>8</td>
+          <td>4.64</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>prepared</code></td>
+          <td>8</td>
+          <td>4.74</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>repeated</code></td>
+          <td>8</td>
+          <td>4.28</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>separate</code></td>
+          <td>8</td>
+          <td>4.83</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>stressed</code></td>
+          <td>8</td>
+          <td>4.18</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td><code>adapted</code></td>
+          <td>7</td>
+          <td>4.17</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>address</code></td>
+          <td>7</td>
+          <td>4.91</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>appears</code></td>
+          <td>7</td>
+          <td>4.84</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>dressed</code></td>
+          <td>7</td>
+          <td>4.42</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>dresses</code></td>
+          <td>7</td>
+          <td>4.05</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>prepare</code></td>
+          <td>7</td>
+          <td>4.55</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>pressed</code></td>
+          <td>7</td>
+          <td>4.12</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>readers</code></td>
+          <td>7</td>
+          <td>4.41</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>retreat</code></td>
+          <td>7</td>
+          <td>4.13</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>started</code></td>
+          <td>7</td>
+          <td>5.39</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>starter</code></td>
+          <td>7</td>
+          <td>4.02</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>stepped</code></td>
+          <td>7</td>
+          <td>4.2</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>streets</code></td>
+          <td>7</td>
+          <td>4.66</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>trapped</code></td>
+          <td>7</td>
+          <td>4.19</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>treated</code></td>
+          <td>7</td>
+          <td>4.71</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td><code>appear</code></td>
+          <td>6</td>
+          <td>4.85</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>arrest</code></td>
+          <td>6</td>
+          <td>4.55</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>assess</code></td>
+          <td>6</td>
+          <td>4.07</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>assets</code></td>
+          <td>6</td>
+          <td>4.56</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>deeper</code></td>
+          <td>6</td>
+          <td>4.3</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>desert</code></td>
+          <td>6</td>
+          <td>4.4</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>estate</code></td>
+          <td>6</td>
+          <td>4.82</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>papers</code></td>
+          <td>6</td>
+          <td>4.61</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>parade</code></td>
+          <td>6</td>
+          <td>4.16</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>passed</code></td>
+          <td>6</td>
+          <td>4.92</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>passes</code></td>
+          <td>6</td>
+          <td>4.45</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>pepper</code></td>
+          <td>6</td>
+          <td>4.14</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>reader</code></td>
+          <td>6</td>
+          <td>4.34</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>repeat</code></td>
+          <td>6</td>
+          <td>4.49</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>speeds</code></td>
+          <td>6</td>
+          <td>4.05</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>spread</code></td>
+          <td>6</td>
+          <td>4.81</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>stated</code></td>
+          <td>6</td>
+          <td>4.74</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>states</code></td>
+          <td>6</td>
+          <td>5.52</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>street</code></td>
+          <td>6</td>
+          <td>5.28</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>stress</code></td>
+          <td>6</td>
+          <td>4.73</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>tastes</code></td>
+          <td>6</td>
+          <td>4.08</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>tested</code></td>
+          <td>6</td>
+          <td>4.48</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>traded</code></td>
+          <td>6</td>
+          <td>4.15</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>trades</code></td>
+          <td>6</td>
+          <td>4.04</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>treats</code></td>
+          <td>6</td>
+          <td>4.06</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td><code>added</code></td>
+          <td>5</td>
+          <td>5.16</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>areas</code></td>
+          <td>5</td>
+          <td>5.15</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>asset</code></td>
+          <td>5</td>
+          <td>4.23</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>dated</code></td>
+          <td>5</td>
+          <td>4.29</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>dates</code></td>
+          <td>5</td>
+          <td>4.54</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>dress</code></td>
+          <td>5</td>
+          <td>4.76</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>paper</code></td>
+          <td>5</td>
+          <td>5.07</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>peers</code></td>
+          <td>5</td>
+          <td>4.02</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>press</code></td>
+          <td>5</td>
+          <td>5.16</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>raped</code></td>
+          <td>5</td>
+          <td>4.08</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>rated</code></td>
+          <td>5</td>
+          <td>4.3</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>rates</code></td>
+          <td>5</td>
+          <td>4.88</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>reads</code></td>
+          <td>5</td>
+          <td>4.25</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>seats</code></td>
+          <td>5</td>
+          <td>4.53</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>seeds</code></td>
+          <td>5</td>
+          <td>4.28</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>spare</code></td>
+          <td>5</td>
+          <td>4.28</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>speed</code></td>
+          <td>5</td>
+          <td>5.0</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>state</code></td>
+          <td>5</td>
+          <td>5.78</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>steps</code></td>
+          <td>5</td>
+          <td>4.73</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>taste</code></td>
+          <td>5</td>
+          <td>4.73</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>tears</code></td>
+          <td>5</td>
+          <td>4.47</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>tests</code></td>
+          <td>5</td>
+          <td>4.67</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>trade</code></td>
+          <td>5</td>
+          <td>5.12</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>treat</code></td>
+          <td>5</td>
+          <td>4.75</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>trees</code></td>
+          <td>5</td>
+          <td>4.69</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td><code>area</code></td>
+          <td>4</td>
+          <td>5.46</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>dare</code></td>
+          <td>4</td>
+          <td>4.31</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>date</code></td>
+          <td>4</td>
+          <td>5.22</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>dead</code></td>
+          <td>4</td>
+          <td>5.19</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>dear</code></td>
+          <td>4</td>
+          <td>4.77</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>deep</code></td>
+          <td>4</td>
+          <td>5.05</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>deer</code></td>
+          <td>4</td>
+          <td>4.12</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>ears</code></td>
+          <td>4</td>
+          <td>4.36</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>ease</code></td>
+          <td>4</td>
+          <td>4.34</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>east</code></td>
+          <td>4</td>
+          <td>5.16</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>peer</code></td>
+          <td>4</td>
+          <td>4.14</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>pets</code></td>
+          <td>4</td>
+          <td>4.08</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>rape</code></td>
+          <td>4</td>
+          <td>4.48</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>rare</code></td>
+          <td>4</td>
+          <td>4.77</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>rate</code></td>
+          <td>4</td>
+          <td>5.14</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>read</code></td>
+          <td>4</td>
+          <td>5.54</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>rear</code></td>
+          <td>4</td>
+          <td>4.43</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>rest</code></td>
+          <td>4</td>
+          <td>5.23</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>seat</code></td>
+          <td>4</td>
+          <td>4.82</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>seed</code></td>
+          <td>4</td>
+          <td>4.37</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>sees</code></td>
+          <td>4</td>
+          <td>4.59</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>sept</code></td>
+          <td>4</td>
+          <td>4.35</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>sets</code></td>
+          <td>4</td>
+          <td>4.69</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>step</code></td>
+          <td>4</td>
+          <td>5.13</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>tape</code></td>
+          <td>4</td>
+          <td>4.44</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>tear</code></td>
+          <td>4</td>
+          <td>4.35</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>test</code></td>
+          <td>4</td>
+          <td>5.19</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>tree</code></td>
+          <td>4</td>
+          <td>4.85</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td><code>TOTAL</code></td>
+          <td></td>
+          <td></td>
+          <td><strong>515</strong></td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</details>
+
+<p>Beyond a raw score, another way we can look at the data is finding the games which have the most pangrams. Here&rsquo;s a list of them, for different Zipf thresholds (obviously, ties exist so I&rsquo;ve just picked the first result for each ZF):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Zipf threshold</th>
+          <th>Pangram</th>
+          <th>Center letter</th>
+          <th># pangrams</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2</td>
+          <td><code>artesian</code></td>
+          <td><code>e</code></td>
+          <td>27</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>argentine</code></td>
+          <td><code>r</code></td>
+          <td>12</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>accident</code></td>
+          <td><code>a</code></td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>4.5</td>
+          <td><code>actions</code></td>
+          <td><code>o</code></td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><code>include</code></td>
+          <td><code>i</code></td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<span class="note-box"><strong><em>Note:</em></strong> Here, <code>argentine</code> does not refer to the country of Argentina (which would make it a proper noun), but rather it is a synonym for silver or silvery.</span>
+<h3 id="worst-games">Worst games<a hidden class="anchor" aria-hidden="true" href="#worst-games">#</a></h3>
+<p>After taking a look at the best and most satisfying games, which yield high scores and multiple pangrams, we can also flip the script and find the absolute bottom of the barrel: games with only one 7-letter pangram! These games are easy to find, as the maximum score you can have here is 14 (7 points for a 7 letter word, plus an additional 7 points for the pangram bonus) - this is also the minimum amount of points one can have in a &ldquo;valid&rdquo; Spelling Bee game.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Zipf threshold</th>
+          <th>Pangram</th>
+          <th>Center letter</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2</td>
+          <td><code>azimuth</code></td>
+          <td><code>z</code></td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>jukebox</code></td>
+          <td><code>x</code></td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>injured</code></td>
+          <td><code>j</code></td>
+      </tr>
+      <tr>
+          <td>4.5</td>
+          <td><code>various</code></td>
+          <td><code>*</code></td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><code>century</code></td>
+          <td><code>y</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>For <code>ZF=4.5</code>, this is actually an interesting result: the pangram <code>various</code> delivers a dead-end game regardless of the center letter!</p>
+<p>Here are also some games with complete solutions consisting of two words (max score is 15):</p>
+<table>
+  <thead>
+      <tr>
+          <th>Zipf threshold</th>
+          <th>Pangram</th>
+          <th>Center letter</th>
+          <th>Other word</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2</td>
+          <td><code>mitzvah</code></td>
+          <td><code>v</code></td>
+          <td><code>viii</code>
+
+
+<a href="#ref-19" class="sidenote-number sidenote-number-mobile" aria-label="Reference 19"></a>
+<a href="#sn-19" class="sidenote-number sidenote-number-desktop" aria-label="Reference 19"></a>
+<span class="sidenote" id="sn-19">The Roman numeral for 8.</span>
+<span class="sidenote-reference" id="ref-19" data-ref="19">The Roman numeral for 8.</span>
+</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>jumping</code></td>
+          <td><code>j</code></td>
+          <td><code>jump</code></td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>anxious</code></td>
+          <td><code>x</code></td>
+          <td><code>axis</code></td>
+      </tr>
+      <tr>
+          <td>4.5</td>
+          <td><code>f*cking</code></td>
+          <td><code>f</code></td>
+          <td><code>f*ck</code> 
+
+
+<a href="#ref-20" class="sidenote-number sidenote-number-mobile" aria-label="Reference 20"></a>
+<a href="#sn-20" class="sidenote-number sidenote-number-desktop" aria-label="Reference 20"></a>
+<span class="sidenote" id="sn-20">For some reason I think this game will not pass NYT quality control.</span>
+<span class="sidenote-reference" id="ref-20" data-ref="20">For some reason I think this game will not pass NYT quality control.</span>
+</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><code>picture</code></td>
+          <td><code>r</code></td>
+          <td><code>true</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="game-score-distributions">Game score distributions<a hidden class="anchor" aria-hidden="true" href="#game-score-distributions">#</a></h3>
+<p>Since we have all of this data, we can also look at the game score distributions across all pangrams (considering only the best possible center letter for each pangram) for the different Zipf frequencies. To that end, I&rsquo;ve made an interactive chart you can play around with:</p>
+<iframe
+  src="/posts/nyt-spelling-bee-dissected-optimized-overthought/plot_score_distribution.html"
+  width="100%"
+  height="835"
+  style="border: 1px solid var(--img-border-color); border-radius: 8px; display: block; margin: 0 auto; box-shadow: var(--img-box-shadow);"
+  loading="lazy">
+</iframe>
+
+<span class="note-box"><strong><em>Note:</em></strong> The NYT-like band (50-300 - these are arbitrarily chosen based on my experience with the game) suggests a Zipf threshold of around 4-4.5 as the sweet spot for generating a game. It&rsquo;s still strict enough to keep ultra-obscure words out, while at the same time offering some challenging games.</span>
+<h2 id="conclusion---this-game-is-the-bees-knees">Conclusion - This game is the bees knees!<a hidden class="anchor" aria-hidden="true" href="#conclusion---this-game-is-the-bees-knees">#</a></h2>
+<p>It turns out that you can do something that&rsquo;s even more nerdy than playing NYT Spelling Bee - spending your free time reverse-engineering it.</p>
+<p>Does any of this help us win at Spelling Bee? Not really - turns out knowing the theoretical limits of this game doesn&rsquo;t help you find the words faster. But, the next time I spend my lunch break playing, I&rsquo;ll at least know that somewhere out there, there&rsquo;s a Hawaiian fish worth 28 points - and that the NYT will never let me use it.</p>
+<p>And finally, to answer our initial question:</p>
+<blockquote class="emphasized-quote">
+  The highest possible Spelling Bee score: <code>515</code> points, the pangram is <code>desperate</code>, and the central letter is <code>e</code>. Completely useless information? Yes. Absolutely worth the hassle? Also yes.
+</blockquote>
+
+<aside class="addendum">
+  <div class="addendum-label">Addendum: Download the data</div>
+  <div class="addendum-body">
+    <p>If you want to play around with this data yourself, I&rsquo;m putting the datasets for Zipf 2 and above up for download:</p>
+<a class="download-btn" href="/files/nyt-spelling-bee-dissected-optimized-overthought/spelling_bee_datasets.zip" download >
+  <span class="download-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+      <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+      <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+    </svg>
+  </span>
+  <span class="download-info">
+    <span class="download-filename">spelling_bee_datasets.zip</span>
+    <span class="download-meta">11.7 MB</span>
+  </span>
+</a>
+  </div>
+</aside>
+
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://eteskeredzic.github.io/tags/tech/">Tech</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/spelling-bee/">Spelling-Bee</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/zipf/">Zipf</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/word-frequency/">Word-Frequency</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/optimization/">Optimization</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/nlp/">Nlp</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/python/">Python</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/data-analysis/">Data Analysis</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/gaming/">Gaming</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/wordnet/">Wordnet</a></li>
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on x"
+            href="https://x.com/intent/tweet/?text=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f&amp;hashtags=tech%2cspelling-bee%2czipf%2cword-frequency%2coptimization%2cnlp%2cpython%2cdataanalysis%2cgaming%2cwordnet">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f&amp;title=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought&amp;summary=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought&amp;source=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f&title=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on whatsapp"
+            href="https://api.whatsapp.com/send?text=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought%20-%20https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on telegram"
+            href="https://telegram.me/share/url?text=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share NYT Spelling Bee: Dissected, Optimized, and Overthought on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=NYT%20Spelling%20Bee%3a%20Dissected%2c%20Optimized%2c%20and%20Overthought&u=https%3a%2f%2feteskeredzic.github.io%2fposts%2fnyt-spelling-bee-dissected-optimized-overthought%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://eteskeredzic.github.io/">Edvin Teskeredzic</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
