@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry | Edvin Teskeredzic</title>
+<meta name="keywords" content="tech, graphs, graph-theory, python, algorithms, optimization, kaladont">
+<meta name="description" content="What can a word game teach us about graph theory? Turns out, a lot!">
+<meta name="author" content="Edvin Teskeredzic">
+<link rel="canonical" href="https://eteskeredzic.github.io/posts/longest-kaladont-game/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.0287da72a1a9bf0bfb60fa26cd400ab24142d4ed62d7cb2ef3db96f01e7696f7.css" integrity="sha256-AofacqGpvwv7YPomzUAKskFC1O1i18su89uW8B52lvc=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://eteskeredzic.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://eteskeredzic.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://eteskeredzic.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://eteskeredzic.github.io/posts/longest-kaladont-game/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      inlineMath: [['\\(', '\\)'], ['$', '$']]
+    }
+  };
+</script>
+<meta property="og:url" content="https://eteskeredzic.github.io/posts/longest-kaladont-game/">
+  <meta property="og:site_name" content="Edvin Teskeredzic">
+  <meta property="og:title" content="I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry">
+  <meta property="og:description" content="What can a word game teach us about graph theory? Turns out, a lot!">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-01T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-01T00:00:00+00:00">
+    <meta property="article:tag" content="Tech">
+    <meta property="article:tag" content="Graphs">
+    <meta property="article:tag" content="Graph-Theory">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Algorithms">
+    <meta property="article:tag" content="Optimization">
+    <meta property="og:image" content="https://eteskeredzic.github.io/posts/longest-kaladont-game/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://eteskeredzic.github.io/posts/longest-kaladont-game/cover.png">
+<meta name="twitter:title" content="I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry">
+<meta name="twitter:description" content="What can a word game teach us about graph theory? Turns out, a lot!">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "posts",
+      "item": "https://eteskeredzic.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "I Ruined a Children's Game Using Graphs and I am Not Sorry",
+      "item": "https://eteskeredzic.github.io/posts/longest-kaladont-game/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "I Ruined a Children's Game Using Graphs and I am Not Sorry",
+  "name": "I Ruined a Children\u0027s Game Using Graphs and I am Not Sorry",
+  "description": "What can a word game teach us about graph theory? Turns out, a lot!",
+  "keywords": [
+    "tech", "graphs", "graph-theory", "python", "algorithms", "optimization", "kaladont"
+  ],
+  "articleBody": " There’s a very popular children’s game in the states of former Yugoslavia. It’s called Kaladont (or Kalodont)\rNamed after a brand of tooth paste popular in Yugoslavia.\rNamed after a brand of tooth paste popular in Yugoslavia.\r. You can play with as many players as possible, but the gist of the game is this: one player says a word. The next player then has to say a word that begins with the last two letters of the previous word. Words that have been said cannot be repeated, and this goes on until a player cannot come up with a new word.\nThe game is called Kaladont because the word (which is to this day a synonym for toothpaste in the southern Balkans) kaladont is a game-ender: there is no word in Bosnian/Croatian/Serbian that begins with nt, so once a player says the word kaladont, the next player in line has effectively lost the game.\nHere’s a practical example:\nI’ve played this game as a kid. A lot.\nYou can imagine my surprise when, as an adult, I was scrolling the web and stumbled upon a challenge based on this game: A Croatian company has set up a simple website\rThe company is OptimoRoute (I’m in no way affiliated with them), and the challenge is available on https://shaolin.dev/.\rThe company is OptimoRoute (I’m in no way affiliated with them), and the challenge is available on https://shaolin.dev/.\rwith some rules and a dictionary of around $160k$ words. Their challenge:\nGiven this dictionary of words, what is the longest game of Kaladont you can play?\rIf you’ve even accidentally passed by a Discrete Mathematics class, you’ll immediately put two and two together: this is a graph problem! And boy, do I love graphs.\nChallenge accepted!\nFrom games to graphs If we’re trying to play for as long as possible, that means using up as many words from the dictionary as we can. And if the game is just a graph, then that means finding the longest path in said graph.\nThe dataset contains around $160k$ words - so that’s gonna be our graph.\nDear God, it’s in NP Let’s be naive for a second, and represent each word in the dictionary as a node in our graph. Then, nodes A and B are connected by an edge from A to B if the last two letters of word A are the same as the first two letters of the word B. What we end up with is a graph of around $160k$ nodes, connected by the rules of Kaladont.\nGraphs are weird - seemingly very similar problems can vastly vary in how difficult they are to solve. For example, finding the shortest path in a directed graph? Child’s play. But, finding the longest path? You’ll be able to brute-force it for smaller graphs, sure. But ours has $160k$ words (nodes) - no efficient algorithm that delivers an exact solution exists. This is why the problem of the longest path in a graph is NP-hard.\nNote: Without going into a tangent about complexity theory, NP-hard basically means that you could easily verify the solution to the problem, but actually coming up with a solution would take up a ridiculous amount of time. For solving NP problems, we’re usually happy with approximating a solution that is good enough, using metaheuristics such as genetic algorithms and simulated annealing. Well, pack it up boys, we’re done here. It’s NP, can’t be solved.\n… is what I would say if there wasn’t a key insight here - a simple trick which we can use to turn this problem from something in NP to something in P - after that, we can whack this challenge with the old Python-shaped hammer.\nOne weird trick I’m gonna spill the beans right away: If we consider our graph, and invert it in a way that the bigrams become the nodes, and the words become the edges, then we simplify this problem by a lot. For our example from before, that would look something like this:\nDoesn’t seem like much of a change. We even have one extra node for our example from before! How does this help? Well, for starters, we have vastly reduced the number of nodes in total: Instead of $160k$ nodes (for $160k$ words), now we have $26^2 = 676$ (all possible two-letter combinations from a–z\rNote that the dataset has omitted South Slavic letters such as č and š.\rNote that the dataset has omitted South Slavic letters such as č and š.\r) nodes, with edges between two nodes representing all words which connect the two bigrams.\nWe went from a graph with many nodes, to a multigraph with few nodes.\rYou might say that this still does not really help, because now instead of many nodes, we have many edges (and arguably an even more complex data structure, since now we are dealing with a multigraph). But, remember that graphs are weird:\nFinding the longest path (going through most nodes) is stupidly hard, but going through most edges is actually solvable in polynomial time (meaning it’s easy!).\rNow that we’re in P territory, we can find a nice solution to this problem.\nSinks, connected components, and a guy named Hierholzer Tackling this problem will require some planning, but all the tools we need to find the longest game of Kaladont are problems that are well-understood in graph theory. I’m gonna lay down the steps we’ll need to do, and then explain them one by one:\nAlgorithm Longest game of Kaladont Load data and build bigram graph Find largest weakly connected component (WCC) Balance the graph for an Eulerian trail Apply Hierholzer’s algorithm Validate solution I’ll skip data loading, since it is trivial (one txt file) and jump straight into WCCs.\nNote: Math and formalism are avoided while explaining these concepts - my explanations might deviate a bit from the formal definitions, but understanding these terms intuitively is much more valuable anyway. Connected Components The easiest way to understand connected components (or as they are also called, components) in graph theory is to imagine the easiest example of a complex graph: the network of roads in a city.\nA component of a graph is a set of nodes that are part of the graph (a subgraph), but that is not connected to any other set of nodes (subgraphs). If you now imagine the graph as the road network of San Francisco, the roads on Alcatraz island would be a component of the graph - they are part of the larger graph (SF), but they are not connected to the rest of the city - there exists no road between Alcatraz and the city.\nHere’s a very brutal abstraction of San Francisco: The top purple node is Alcatraz island - it is part of SF, but not connected to SF proper - it is a component of the graph.\nWhy do components matter to us? There’s actually a special definition, called a weakly connected component (WCC) and that is what we are after: A WCC is a set of nodes in the graph, where any node can be reached from any other node, if we ignore edge direction. Finding the largest WCC in our graph of bigrams is a huge help, because words in different WCCs cannot be part of the same chain\rIf they were in the same chain, they’d be part of the same WCC as well.\rIf they were in the same chain, they’d be part of the same WCC as well.\r- it’s a property of Weakly Connected Components.\nFinding the largest WCC can be done using the networkx library in Python - it’s one simple line of code\nnx.weakly_connected_components() Alternatively, one could use the Union-Find algorithm in order to compute WCCs, and then just discard all but the largest one. It works with two operations, union and find. The first operation unites two groups, while the second operation finds the group a bigram belongs to, by returning the representative bigram of that group. Implementation is straightforward:\nparent: dict[str, str] = {} def find(x: str) -\u003e str: parent.setdefault(x, x) while parent[x] != x: parent[x] = parent[parent[x]] # path halving x = parent[x] return x def union(x: str, y: str) -\u003e None: parent[find(x)] = find(y) # go through all words, form unions of bigrams for word in words: union(word[:2], word[-2:]) After this, we simply apply find to each bigram again, and count how many bigrams share a parent/group (we make a histogram, effectively). The largest of these groups is also the largest WCC. What we end up with is:\nOriginal Dataset Largest WCC $159 836$ words $159 829$ words The 7 discarded words are: kg, mg, vb, wtf, www, xu, xxx - all of them are either abbreviations for physical units, or Internet slang. These words do not connect to any other word in the Croatian language by the rules of Kaladont.\nWe’ve got our largest WCC (even tho we have eliminated only a few words) - now we have to set the stage for actually being able to find an Eulerian trail in it. We do this with graph balancing.\nNote: An Eulerian trail of a graph is a trail that passes through every edge of the graph exactly once. If the trail starts and ends in the same node, then it’s called an Eulerian circuit. Graph Balancing If we want to find the Eulerian trail, we’ll need to make sure the graph follows certain rules:\nAt most one node has balance = +1 - this is the start of the trail. At most one node has balance = -1 - this is the end of the trail. All other nodes have balance = 0 The graph is weakly connected (we ensured this by working only with the largest WCC) Where balance is defined as\nbalance(node) = out_degree(node) - in_degree(node) Croatian (and other South Slavic languages) are extremely unbalanced: there are certain bigrams which are common word endings (like ic), but there are almost no words starting with this bigram. The opposite is true as well: words that begin with the bigram pr are extremely common, but words ending with it are not. In other words, our graph contains a couple of large sinks and sources.\nWe’ll need to balance those out. We cannot just insert new edges to make the balance zero (that would be like inventing new words which are not in the dataset), so we will have to remove edges from the graph (discard words) until the graph is balanced.\nMin-Cost Flow The trick is to remove as few edges as possible to balance the graph, because we want to keep as many words as possible. This is a min-cost flow problem, which networkx easily cracks.\nSimply put, for each bigram pair, we’ll add a directed edge between them. The edge will have a capacity assigned to it, with each unit of capacity representing removing one word from the group of words that connect these two bigrams (the solver needs these special edges). Then it’s just a matter of removing either incoming (if balance is negative) or outgoing (if balance is positive) words.\nI’ve applied two more strategies at this step, namely:\nMin-cost flow runs over multiple (start, end) candidate pairs. Each pair produces a different linear program (LP) instance, which leads to a different optimal flow solution and a different balanced subgraph. For start, I’ve picked the top imbalanced source nodes, while for end, we go with the top imbalanced sink nodes. There’s a special bridge removal cost assigned to bridge edges, so the solver avoids removing them unless no alternative routing exists. The code for this is a bit too long for a blog post, but in essence it looks like this: Algorithm Graph Balancing Find top N source and sink nodes (N=3 for me) For every (source, sink) pair Build flow graph Apply networkx min-cost flow Remove words according to results of min-cost flow If new solution is better than current best, keep it Return new balanced graph Something strange happens after running graph balancing - $26571$ words remain after it. From our initial ${\\sim}160k$, we are down to just ${\\sim}26k$. At first, this might seem like a bug, however given the morphology of South Slavic languages, and the contents of this dataset, it makes perfect sense.\nThink of each bigram as a junction in a network of pipes. Water enters a junction when the previous word in the chain ends in that bigram. In the same sense, water leaves a junction when the next word in the chain starts with that bigram. Now, following the rules of Kaladont, if we enter the junction pr, we also have to exit it via a word that begins with pr.\nNow, let’s count how many words in the dataset end with pr. It’s two words. Yup. knepr and npr, the second one being an abbreviation for naprimjer. That means that the junction pr can be entered at most three times\rTwo entries, plus one free exit as the start node.\rTwo entries, plus one free exit as the start node.\r, meaning at most three words that begin with pr can appear in the entire chain. Let us now count how many words in the dataset begin with pr - the answer is $13426$. And we can use three of these. The other $13423$ are stuck and of no use to us. There exists no such chain that contains more than three words starting with pr, no matter how clever our approach is.\nHere’s a visual representation of the dataset. Notice the huge sink and source nodes:\nNow extrapolate this to other bigrams, and the vast majority of our initial dataset gets removed.\nBigram Words starting with it Words ending with it Maximum usable Words lost pr $13426$ $2$ $3$ ${\\sim}13423$ po $4664$ $44$ $45$ ${\\sim}4619$ ic $13$ $14202$ $13$ ${\\sim}14189$ in $1119$ $11079$ $1119$ ${\\sim}9960$ So, the result is a graph of $26571$ edges where an Eulerian trail from source to sink is guaranteed to exist. Now it’s just a matter of finding it.\nLuckily, a German mathematician can help us out here.\nHierholzer’s Algorithm Finding the Eulerian trail is actually pretty simple, thanks to Hierholzer’s Algorithm Named after the mathematician Carl Hierholzer\rNamed after the mathematician Carl Hierholzer\r. Here’s the approach:\nStart at our designated start node, and greedily follow edges until we get stuck (by reaching a dead end). If not all edges have been used up until that point, jump back and start a new sub-path from there, and splice it into the main path at that junction. The key detail for us is to keep tracking edge labels (words), not just nodes (bigrams). The algorithm is stack-based, meaning we maintain two stacks, one for nodes visited on the current trail, and one for the words that were used to arrive at the nodes. When we hit a dead end, we pop from both stacks. The popped word gets put into a result list. When we reverse the result at the end, we get our list of words. Here’s a Python implementation of this elegant algorithm:\ndef hierholzer(adj: dict[str, deque], start: str) -\u003e list[str]: node_stack: list[str] = [start] edge_stack: list[str | None] = [None] trail: list[str] = [] while node_stack: v = node_stack[-1] if adj[v]: next_v, word = adj[v].popleft() node_stack.append(next_v) edge_stack.append(word) else: node_stack.pop() word = edge_stack.pop() if word is not None: trail.append(word) trail.reverse() return trail Solution So, after running all of this, we finally arrive at a solution: A game of Kaladont where a whopping $26549$ words are used.\rThat ain’t so bad, we’ve used up almost all words we had available after balancing!\nI won’t be posting the entire chain here, since it is huge. That said, here is the beginning and end of the chain:\n['pretu', 'tu', 'tumpa', 'pa', 'pampa', ..., 'vsetecka', 'kaznjiv', 'ivcevski', 'kirs', 'rstic'] Can it be better? The obvious question here is - theoretically, can this chain be longer? Well, it’s certainly possible, but probably not by much. And the reasoning is simple:\nOur balancing step here is the wild-card. Min-cost flow has multiple equally optimal solutions, and networkx just picks one at random, instead of exploring the full theoretical solution space. One way to solve this could be to use Integer Linear Programming (ILP), which might yield better results. The min-cost flow solves degree balance and minimum removals in a truly optimal way, but it is not aware of connectivity. ILP solves all three of these, albeit NP-hard (which is fine for a graph of such few nodes as ours).\nRunning ILP (for example through gurobi\rAgain, I am in no way affiliated with them.\rAgain, I am in no way affiliated with them.\r) could find an even better path - still, if such a path exists, it would only be marginally better.\nWhat I wanted to do with this post is to show off how a simple child’s game maps to different fun graph problems (all in P!), so I won’t be doing any ILP now.\nMaybe you can take a stab at it :)\nWhy do we even need this? Engineering is basically optimization: You want to save time, money, resources, you name it. The problem of the longest path is, at first glance, something that is entirely against the core philosophy of engineering - would I not prefer to get from A to B in the fastest, cheapest way possible? And yes, that’s true for many problems. However, there are concrete applications in industry - I’d do this post a disservice if I didn’t mention them, so here are some of my favorites:\nLogistics \u0026 Route Planning: The classic example from my college days is the Chinese Postman Problem - a postman needs to go through every street in a city, at least once. The Eulerian trail is the optimal solution. You can imagine that the same idea applies to waste management, road inspection, etc. DNA sequencing: Assembling a genome requires reconstructing the full DNA sequence from millions of fragments (which, just like our Kaladont model, overlap with one another). These fragments are edges in a directed graph Called the De Bruijn graph - I knew my Bioinformatics elective would pay off one day!\rCalled the De Bruijn graph - I knew my Bioinformatics elective would pay off one day!\r, and finding the original sequence is basically finding the Eulerian trail. Diameter signalling route testing: This one I’ve picked up from the telco folks which I currently work with - signalling networks are complex mesh topologies, and testing every link requires covering every edge. If we want to get full testing coverage, while at the same time minimizing the number of messages we need to send, then we are basically solving the same problem as this blog post. Final words Graphs are everywhere around us, and a lot of problems can be mapped to unwrangling some kind of graph. Even a simple word game can teach us many fundamental things in graph theory, and isn’t that just neat?\nAnd where does the longest game of Kaladont end? At rstic, a word ending in ic, the language’s biggest sink. As it turns out, all roads really do lead to ic.\nAddendum: Download the data If you really have nothing better to do with your life, here’s the entire chain, for your viewing pleasure:\ntrail.txt 230 KB ",
+  "wordCount" : "3242",
+  "inLanguage": "en",
+  "image":"https://eteskeredzic.github.io/posts/longest-kaladont-game/cover.png","datePublished": "2026-06-01T00:00:00Z",
+  "dateModified": "2026-06-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Edvin Teskeredzic"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eteskeredzic.github.io/posts/longest-kaladont-game/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Edvin Teskeredzic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eteskeredzic.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://eteskeredzic.github.io/" accesskey="h" title="Edvin Teskeredzic (Alt + H)">Edvin Teskeredzic</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://eteskeredzic.github.io/whoami/" title="whoami">
+                    <span>whoami</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/contact/" title="contact">
+                    <span>contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/archives/" title="archives">
+                    <span>archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://eteskeredzic.github.io/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://eteskeredzic.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://eteskeredzic.github.io/posts/">posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry
+    </h1>
+    <div class="post-description">
+      What can a word game teach us about graph theory? Turns out, a lot!
+    </div>
+    <div class="post-meta"><span title='2026-06-01 00:00:00 +0000 UTC'>June 1, 2026</span>&nbsp;·&nbsp;<span>16 min</span>&nbsp;·&nbsp;<span>3242 words</span>&nbsp;·&nbsp;<span>Edvin Teskeredzic</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#from-games-to-graphs" aria-label="From games to graphs">From games to graphs</a><ul>
+                        
+                <li>
+                    <a href="#dear-god-its-in-np" aria-label="Dear God, it&rsquo;s in NP">Dear God, it&rsquo;s in NP</a></li>
+                <li>
+                    <a href="#one-weird-trick" aria-label="One weird trick">One weird trick</a></li></ul>
+                </li>
+                <li>
+                    <a href="#sinks-connected-components-and-a-guy-named-hierholzer" aria-label="Sinks, connected components, and a guy named Hierholzer">Sinks, connected components, and a guy named Hierholzer</a><ul>
+                        
+                <li>
+                    <a href="#connected-components" aria-label="Connected Components">Connected Components</a></li>
+                <li>
+                    <a href="#graph-balancing" aria-label="Graph Balancing">Graph Balancing</a><ul>
+                        
+                <li>
+                    <a href="#min-cost-flow" aria-label="Min-Cost Flow">Min-Cost Flow</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hierholzers-algorithm" aria-label="Hierholzer&rsquo;s Algorithm">Hierholzer&rsquo;s Algorithm</a></li></ul>
+                </li>
+                <li>
+                    <a href="#solution" aria-label="Solution">Solution</a><ul>
+                        
+                <li>
+                    <a href="#can-it-be-better" aria-label="Can it be better?">Can it be better?</a></li></ul>
+                </li>
+                <li>
+                    <a href="#why-do-we-even-need-this" aria-label="Why do we even need this?">Why do we even need this?</a></li>
+                <li>
+                    <a href="#final-words" aria-label="Final words">Final words</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><img src="/posts/longest-kaladont-game/cover.svg" alt="Cover image"   style="display: block; margin: 0 auto; margin-bottom: 1rem; border: 1px solid var(--img-border-color); border-radius: 8px; box-shadow: var(--img-box-shadow); background-color: white;">
+
+<p>There&rsquo;s a very popular children&rsquo;s game in the states of former Yugoslavia. It&rsquo;s called <strong><em>Kaladont</em></strong> (or <strong><em>Kalodont</em></strong>)
+
+
+<a href="#ref-1" class="sidenote-number sidenote-number-mobile" aria-label="Reference 1"></a>
+<a href="#sn-1" class="sidenote-number sidenote-number-desktop" aria-label="Reference 1"></a>
+<span class="sidenote" id="sn-1">Named after a brand of tooth paste popular in Yugoslavia.</span>
+<span class="sidenote-reference" id="ref-1" data-ref="1">Named after a brand of tooth paste popular in Yugoslavia.</span>
+. You can play with as many players as possible, but the gist of the game is this: one player says a word. The next player then has to say a word that begins with the last two letters of the previous word. Words that have been said cannot be repeated, and this goes on until a player cannot come up with a new word.</p>
+<p>The game is called <strong><em>Kaladont</em></strong> because the word (which is to this day a synonym for toothpaste in the southern Balkans) <code>kaladont</code> is a game-ender: there is no word in Bosnian/Croatian/Serbian that begins with <code>nt</code>, so once a player says the word <code>kaladont</code>, the next player in line has effectively lost the game.</p>
+<p>Here&rsquo;s a practical example:</p>
+<img src="/posts/longest-kaladont-game/kaladont_example.svg" alt="Kaladont Example" style="display: block; margin: 0 auto;">
+<p>I&rsquo;ve played this game as a kid. A lot.</p>
+<p>You can imagine my surprise when, as an adult, I was scrolling the web and stumbled upon a challenge based on this game: A Croatian company has set up a simple website
+
+
+<a href="#ref-2" class="sidenote-number sidenote-number-mobile" aria-label="Reference 2"></a>
+<a href="#sn-2" class="sidenote-number sidenote-number-desktop" aria-label="Reference 2"></a>
+<span class="sidenote" id="sn-2">The company is <a href="https://optimoroute.com/" target="_blank" rel="noopener noreferrer">OptimoRoute</a> (I&rsquo;m in no way affiliated with them), and the challenge is available on <a href="https://shaolin.dev/" target="_blank" rel="noopener noreferrer">https://shaolin.dev/</a>.</span>
+<span class="sidenote-reference" id="ref-2" data-ref="2">The company is <a href="https://optimoroute.com/" target="_blank" rel="noopener noreferrer">OptimoRoute</a> (I&rsquo;m in no way affiliated with them), and the challenge is available on <a href="https://shaolin.dev/" target="_blank" rel="noopener noreferrer">https://shaolin.dev/</a>.</span>
+ with some rules and a dictionary of around $160k$ words. Their challenge:</p>
+<blockquote class="centered-quote">
+  Given this dictionary of words, what is the longest game of <strong><em>Kaladont</em></strong> you can play?
+</blockquote>
+
+<p>If you&rsquo;ve even accidentally passed by a Discrete Mathematics class, you&rsquo;ll immediately put two and two together: <strong>this is a graph problem!</strong> And boy, do I love graphs.</p>
+<p>Challenge accepted!</p>
+<h2 id="from-games-to-graphs">From games to graphs<a hidden class="anchor" aria-hidden="true" href="#from-games-to-graphs">#</a></h2>
+<p>If we&rsquo;re trying to play for as long as possible, that means using up as many words from the dictionary as we can. And if the game is just a graph, then that means finding the longest path in said graph.</p>
+<p>The dataset contains around $160k$ words - so that&rsquo;s gonna be our graph.</p>
+<h3 id="dear-god-its-in-np">Dear God, it&rsquo;s in NP<a hidden class="anchor" aria-hidden="true" href="#dear-god-its-in-np">#</a></h3>
+<p>Let&rsquo;s be naive for a second, and represent each word in the dictionary as a node in our graph. Then, nodes A and B are connected by an edge from A to B if the last two letters of word A are the same as the first two letters of the word B. What we end up with is a graph of around $160k$ nodes, connected by the rules of <strong><em>Kaladont</em></strong>.</p>
+<p>Graphs are weird - seemingly very similar problems can vastly vary in how difficult they are to solve. For example, finding the <em>shortest</em> path in a directed graph? Child&rsquo;s play. But, finding the <em>longest</em> path? You&rsquo;ll be able to brute-force it for smaller graphs, sure. But ours has $160k$ words (nodes) - no efficient algorithm that delivers an exact solution exists. This is why the problem of the longest path in a graph is <strong><em>NP-hard</em></strong>.</p>
+<span class="note-box"><strong><em>Note:</em></strong> Without going into a tangent about complexity theory, NP-hard basically means that you could easily verify the solution to the problem, but actually coming up with a solution would take up a ridiculous amount of time. For solving NP problems, we&rsquo;re usually happy with approximating a solution that is good enough, using metaheuristics such as genetic algorithms and simulated annealing.</span>
+<p><em>Well, pack it up boys, we&rsquo;re done here. It&rsquo;s NP, can&rsquo;t be solved.</em></p>
+<p>&hellip; is what I would say if there wasn&rsquo;t a key insight here - a simple trick which we can use to turn this problem from something in <strong>NP</strong> to something in <strong>P</strong> - after that, we can whack this challenge with the old Python-shaped hammer.</p>
+<h3 id="one-weird-trick">One weird trick<a hidden class="anchor" aria-hidden="true" href="#one-weird-trick">#</a></h3>
+<p>I&rsquo;m gonna spill the beans right away: If we consider our graph, and invert it in a way that the bigrams become the nodes, and the words become the edges, then we simplify this problem by a lot. For our example from before, that would look something like this:</p>
+<img src="/posts/longest-kaladont-game/bigram_graph.svg" alt="Kaladont Example" style="display: block; margin: 0 auto;">
+<p>Doesn&rsquo;t seem like much of a change. We even have one extra node for our example from before! How does this help? Well, for starters, we have vastly reduced the number of nodes in total: Instead of $160k$ nodes (for $160k$ words), now we have $26^2 = 676$ (all possible two-letter combinations from a–z
+
+
+<a href="#ref-5" class="sidenote-number sidenote-number-mobile" aria-label="Reference 5"></a>
+<a href="#sn-5" class="sidenote-number sidenote-number-desktop" aria-label="Reference 5"></a>
+<span class="sidenote" id="sn-5">Note that the dataset has omitted South Slavic letters such as <code>č</code> and <code>š</code>.</span>
+<span class="sidenote-reference" id="ref-5" data-ref="5">Note that the dataset has omitted South Slavic letters such as <code>č</code> and <code>š</code>.</span>
+) nodes, with edges between two nodes representing all words which connect the two bigrams.</p>
+<blockquote class="centered-quote">
+  We went from a graph with many nodes, to a multigraph with few nodes.
+</blockquote>
+
+<p>You might say that this still does not really help, because now instead of many nodes, we have many edges (and arguably an even more complex data structure, since now we are dealing with a multigraph). But, remember that graphs are weird:</p>
+<blockquote class="centered-quote">
+  Finding the longest path (going through most nodes) is stupidly hard, but going through most edges is actually solvable in polynomial time (meaning it&rsquo;s easy!).
+</blockquote>
+
+<p>Now that we&rsquo;re in <strong>P</strong> territory, we can find a nice solution to this problem.</p>
+<h2 id="sinks-connected-components-and-a-guy-named-hierholzer">Sinks, connected components, and a guy named Hierholzer<a hidden class="anchor" aria-hidden="true" href="#sinks-connected-components-and-a-guy-named-hierholzer">#</a></h2>
+<p>Tackling this problem will require some planning, but all the tools we need to find the longest game of <strong><em>Kaladont</em></strong> are problems that are well-understood in graph theory. I&rsquo;m gonna lay down the steps we&rsquo;ll need to do, and then explain them one by one:</p>
+<div class="algorithm-box">
+  <div class="algorithm-header">
+    <span class="algorithm-label">Algorithm</span>
+    <span class="algorithm-title">Longest game of Kaladont</span>
+  </div>
+  <div class="algorithm-body">
+    <ol>
+<li>Load data and build bigram graph</li>
+<li>Find largest weakly connected component (WCC)</li>
+<li>Balance the graph for an Eulerian trail</li>
+<li>Apply Hierholzer&rsquo;s algorithm</li>
+<li>Validate solution</li>
+</ol>
+
+  </div>
+</div>
+
+<p>I&rsquo;ll skip data loading, since it is trivial (one <code>txt</code> file) and jump straight into WCCs.</p>
+<span class="note-box"><strong><em>Note:</em></strong> Math and formalism are avoided while explaining these concepts - my explanations might deviate a bit from the formal definitions, but understanding these terms intuitively is much more valuable anyway.</span>
+<h3 id="connected-components">Connected Components<a hidden class="anchor" aria-hidden="true" href="#connected-components">#</a></h3>
+<p>The easiest way to understand connected components (or as they are also called, components) in graph theory is to imagine the easiest example of a complex graph: the network of roads in a city.</p>
+<p>A component of a graph is a set of nodes that are part of the graph (a subgraph), but that is not connected to any other set of nodes (subgraphs). If you now imagine the graph as the road network of San Francisco, the roads on Alcatraz island would be a component of the graph - they are part of the larger graph (SF), but they are not connected to the rest of the city - there exists no road between Alcatraz and the city.</p>
+<p>Here&rsquo;s a very brutal abstraction of San Francisco: The top purple node is Alcatraz island - it is part of SF, but not connected to SF proper - it is a <strong><em>component</em></strong> of the graph.</p>
+<img src="/posts/longest-kaladont-game/component.svg" alt="Kaladont Example" style="display: block; margin: 0 auto;">
+<p>Why do components matter to us? There&rsquo;s actually a special definition, called a <strong><em>weakly connected component</em></strong> (WCC) and that is what we are after: A WCC is a set of nodes in the graph, where any node can be reached from any other node, if we ignore edge direction. Finding the largest WCC in our graph of bigrams is a huge help, because words in different WCCs cannot be part of the same chain
+
+
+<a href="#ref-10" class="sidenote-number sidenote-number-mobile" aria-label="Reference 10"></a>
+<a href="#sn-10" class="sidenote-number sidenote-number-desktop" aria-label="Reference 10"></a>
+<span class="sidenote" id="sn-10">If they were in the same chain, they&rsquo;d be part of the same WCC as well.</span>
+<span class="sidenote-reference" id="ref-10" data-ref="10">If they were in the same chain, they&rsquo;d be part of the same WCC as well.</span>
+ - it&rsquo;s a property of Weakly Connected Components.</p>
+<p>Finding the largest WCC can be done using the <code>networkx</code> library in Python - it&rsquo;s one simple line of code</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>nx<span style="color:#f92672">.</span>weakly_connected_components()
+</span></span></code></pre></div><p>Alternatively, one could use the <strong><em>Union-Find</em></strong> algorithm in order to compute WCCs, and then just discard all but the largest one. It works with two operations, <code>union</code> and <code>find</code>. The first operation unites two groups, while the second operation finds the group a bigram belongs to, by returning the representative bigram of that group. Implementation is straightforward:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>parent: dict[str, str] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">find</span>(x: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    parent<span style="color:#f92672">.</span>setdefault(x, x)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> parent[x] <span style="color:#f92672">!=</span> x:
+</span></span><span style="display:flex;"><span>        parent[x] <span style="color:#f92672">=</span> parent[parent[x]]  <span style="color:#75715e"># path halving</span>
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> parent[x]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">union</span>(x: str, y: str) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    parent[find(x)] <span style="color:#f92672">=</span> find(y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># go through all words, form unions of bigrams</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> words:
+</span></span><span style="display:flex;"><span>    union(word[:<span style="color:#ae81ff">2</span>], word[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>:])
+</span></span></code></pre></div><p>After this, we simply apply <code>find</code> to each bigram again, and count how many bigrams share a parent/group (we make a histogram, effectively). The largest of these groups is also the largest WCC. What we end up with is:</p>
+<table>
+	<thead>
+			<tr>
+					<th>Original Dataset</th>
+					<th>Largest WCC</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$159 836$ words</td>
+					<td>$159 829$ words</td>
+			</tr>
+	</tbody>
+</table>
+<p>The 7 discarded words are: <code>kg</code>, <code>mg</code>, <code>vb</code>, <code>wtf</code>, <code>www</code>, <code>xu</code>, <code>xxx</code> - all of them are either abbreviations for physical units, or Internet slang. These words do not connect to any other word in the Croatian language by the rules of <strong><em>Kaladont</em></strong>.</p>
+<p>We&rsquo;ve got our largest WCC (even tho we have eliminated only a few words) - now we have to set the stage for actually being able to find an Eulerian trail in it. We do this with graph balancing.</p>
+<span class="note-box"><strong><em>Note:</em></strong> An Eulerian trail of a graph is a trail that passes through every edge of the graph exactly once. If the trail starts and ends in the same node, then it&rsquo;s called an Eulerian circuit.</span>
+<h3 id="graph-balancing">Graph Balancing<a hidden class="anchor" aria-hidden="true" href="#graph-balancing">#</a></h3>
+<p>If we want to find the Eulerian trail, we&rsquo;ll need to make sure the graph follows certain rules:</p>
+<ol>
+<li>At most one node has <code>balance = +1</code> - this is the start of the trail.</li>
+<li>At most one node has <code>balance = -1</code> - this is the end of the trail.</li>
+<li>All other nodes have <code>balance = 0</code></li>
+<li>The graph is weakly connected (we ensured this by working only with the largest WCC)</li>
+</ol>
+<p>Where balance is defined as</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>balance(node) <span style="color:#f92672">=</span> out_degree(node) <span style="color:#f92672">-</span> in_degree(node)
+</span></span></code></pre></div><p>Croatian (and other South Slavic languages) are extremely unbalanced: there are certain bigrams which are common word endings (like <code>ic</code>), but there are almost no words starting with this bigram. The opposite is true as well: words that begin with the bigram <code>pr</code> are extremely common, but words ending with it are not. In other words, our graph contains a couple of large sinks and sources.</p>
+<p>We&rsquo;ll need to balance those out. We cannot just insert new edges to make the balance zero (that would be like inventing new words which are not in the dataset), so we will have to remove edges from the graph (discard words) until the graph is balanced.</p>
+<h4 id="min-cost-flow">Min-Cost Flow<a hidden class="anchor" aria-hidden="true" href="#min-cost-flow">#</a></h4>
+<p>The trick is to remove as few edges as possible to balance the graph, because we want to keep as many words as possible. This is a min-cost flow problem, which <code>networkx</code> easily cracks.</p>
+<p>Simply put, for each bigram pair, we&rsquo;ll add a directed edge between them. The edge will have a capacity assigned to it, with each unit of capacity representing removing one word from the group of words that connect these two bigrams (the solver needs these special edges). Then it&rsquo;s just a matter of removing either incoming (if balance is negative) or outgoing (if balance is positive) words.</p>
+<p>I&rsquo;ve applied two more strategies at this step, namely:</p>
+<ul>
+<li>Min-cost flow runs over multiple <code>(start, end)</code> candidate pairs. Each pair produces a different linear program (LP) instance, which leads to a different optimal flow solution and a different balanced subgraph. For start, I&rsquo;ve picked the top imbalanced source nodes, while for end, we go with the top imbalanced sink nodes.</li>
+<li>There&rsquo;s a special bridge removal cost assigned to bridge edges, so the solver avoids removing them unless no alternative routing exists.</li>
+</ul>
+<p>The code for this is a bit too long for a blog post, but in essence it looks like this:
+<div class="algorithm-box">
+  <div class="algorithm-header">
+    <span class="algorithm-label">Algorithm</span>
+    <span class="algorithm-title">Graph Balancing</span>
+  </div>
+  <div class="algorithm-body">
+    <ol>
+<li>Find top <code>N</code> source and sink nodes (<code>N=3</code> for me)</li>
+<li>For every <code>(source, sink)</code> pair
+<ol>
+<li>Build flow graph</li>
+<li>Apply <code>networkx</code> min-cost flow</li>
+<li>Remove words according to results of min-cost flow</li>
+<li>If new solution is better than current best, keep it</li>
+</ol>
+</li>
+<li>Return new balanced graph</li>
+</ol>
+
+  </div>
+</div>
+</p>
+<p>Something strange happens after running graph balancing - $26571$ words remain after it. From our initial ${\sim}160k$, we are down to just ${\sim}26k$. At first, this might seem like a bug, however given the morphology of South Slavic languages, and the contents of this dataset, it makes perfect sense.</p>
+<p>Think of each bigram as a junction in a network of pipes. Water enters a junction when the previous word in the chain ends in that bigram. In the same sense, water leaves a junction when the next word in the chain starts with that bigram. Now, following the rules of <strong><em>Kaladont</em></strong>, if we enter the junction <code>pr</code>, we also have to exit it via a word that begins with <code>pr</code>.</p>
+<p>Now, let&rsquo;s count how many words in the dataset end with <code>pr</code>. It&rsquo;s two words. Yup. <code>knepr</code> and <code>npr</code>, the second one being an abbreviation for <code>naprimjer</code>. That means that the junction <code>pr</code> can be entered at most three times
+
+
+<a href="#ref-13" class="sidenote-number sidenote-number-mobile" aria-label="Reference 13"></a>
+<a href="#sn-13" class="sidenote-number sidenote-number-desktop" aria-label="Reference 13"></a>
+<span class="sidenote" id="sn-13">Two entries, plus one free exit as the start node.</span>
+<span class="sidenote-reference" id="ref-13" data-ref="13">Two entries, plus one free exit as the start node.</span>
+, meaning at most three words that begin with <code>pr</code> can appear in the entire chain. Let us now count how many words in the dataset begin with <code>pr</code> - the answer is $13426$. And we can use three of these. The other $13423$ are stuck and of no use to us. There exists no such chain that contains more than three words starting with <code>pr</code>, no matter how clever our approach is.</p>
+<p>Here&rsquo;s a visual representation of the dataset. Notice the huge sink and source nodes:</p>
+<h2 id="hahahugoshortcode12s14hbhb"><iframe
+  src="/posts/longest-kaladont-game/language_graph.html"
+  width="100%"
+  height="920"
+  style="border: 1px solid var(--img-border-color); border-radius: 8px; display: block; margin: 0 auto; box-shadow: var(--img-box-shadow);"
+  loading="lazy">
+</iframe>
+</h2>
+<p>Now extrapolate this to other bigrams, and the vast majority of our initial dataset gets removed.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Bigram</th>
+					<th>Words starting with it</th>
+					<th>Words ending with it</th>
+					<th>Maximum usable</th>
+					<th>Words lost</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>pr</code></td>
+					<td>$13426$</td>
+					<td>$2$</td>
+					<td>$3$</td>
+					<td>${\sim}13423$</td>
+			</tr>
+			<tr>
+					<td><code>po</code></td>
+					<td>$4664$</td>
+					<td>$44$</td>
+					<td>$45$</td>
+					<td>${\sim}4619$</td>
+			</tr>
+			<tr>
+					<td><code>ic</code></td>
+					<td>$13$</td>
+					<td>$14202$</td>
+					<td>$13$</td>
+					<td>${\sim}14189$</td>
+			</tr>
+			<tr>
+					<td><code>in</code></td>
+					<td>$1119$</td>
+					<td>$11079$</td>
+					<td>$1119$</td>
+					<td>${\sim}9960$</td>
+			</tr>
+	</tbody>
+</table>
+<p>So, the result is a graph of $26571$ edges where an Eulerian trail from <code>source</code> to <code>sink</code> is guaranteed to exist. Now it&rsquo;s just a matter of finding it.</p>
+<p>Luckily, a German mathematician can help us out here.</p>
+<h3 id="hierholzers-algorithm">Hierholzer&rsquo;s Algorithm<a hidden class="anchor" aria-hidden="true" href="#hierholzers-algorithm">#</a></h3>
+<p>Finding the Eulerian trail is actually pretty simple, thanks to <strong><em>Hierholzer&rsquo;s Algorithm</em></strong> 
+
+
+<a href="#ref-15" class="sidenote-number sidenote-number-mobile" aria-label="Reference 15"></a>
+<a href="#sn-15" class="sidenote-number sidenote-number-desktop" aria-label="Reference 15"></a>
+<span class="sidenote" id="sn-15">Named after the mathematician Carl Hierholzer</span>
+<span class="sidenote-reference" id="ref-15" data-ref="15">Named after the mathematician Carl Hierholzer</span>
+. Here&rsquo;s the approach:</p>
+<ul>
+<li>Start at our designated start node, and greedily follow edges until we get stuck (by reaching a dead end). If not all edges have been used up until that point, jump back and start a new sub-path from there, and splice it into the main path at that junction. The key detail for us is to keep tracking edge labels (words), not just nodes (bigrams).</li>
+<li>The algorithm is stack-based, meaning we maintain two stacks, one for nodes visited on the current trail, and one for the words that were used to arrive at the nodes. When we hit a dead end, we pop from both stacks. The popped word gets put into a result list. When we reverse the result at the end, we get our list of words.</li>
+</ul>
+<p>Here&rsquo;s a Python implementation of this elegant algorithm:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hierholzer</span>(adj: dict[str, deque], start: str) <span style="color:#f92672">-&gt;</span> list[str]:
+</span></span><span style="display:flex;"><span>    node_stack: list[str] <span style="color:#f92672">=</span> [start]
+</span></span><span style="display:flex;"><span>    edge_stack: list[str <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>] <span style="color:#f92672">=</span> [<span style="color:#66d9ef">None</span>]
+</span></span><span style="display:flex;"><span>    trail: list[str] <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> node_stack:
+</span></span><span style="display:flex;"><span>        v <span style="color:#f92672">=</span> node_stack[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> adj[v]:
+</span></span><span style="display:flex;"><span>            next_v, word <span style="color:#f92672">=</span> adj[v]<span style="color:#f92672">.</span>popleft()
+</span></span><span style="display:flex;"><span>            node_stack<span style="color:#f92672">.</span>append(next_v)
+</span></span><span style="display:flex;"><span>            edge_stack<span style="color:#f92672">.</span>append(word)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            node_stack<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>            word <span style="color:#f92672">=</span> edge_stack<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> word <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>                trail<span style="color:#f92672">.</span>append(word)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    trail<span style="color:#f92672">.</span>reverse()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> trail
+</span></span></code></pre></div><h2 id="solution">Solution<a hidden class="anchor" aria-hidden="true" href="#solution">#</a></h2>
+<p>So, after running all of this, we finally arrive at a solution:
+<blockquote class="emphasized-quote">
+  A game of <strong><em>Kaladont</em></strong> where a whopping $26549$ words are used.
+</blockquote>
+
+That ain&rsquo;t so bad, we&rsquo;ve used up almost all words we had available after balancing!</p>
+<p>I won&rsquo;t be posting the entire chain here, since it is huge. That said, here is the beginning and end of the chain:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>[<span style="color:#e6db74">&#39;pretu&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;tu&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;tumpa&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;pa&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;pampa&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">...</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;vsetecka&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;kaznjiv&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;ivcevski&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;kirs&#39;</span>, 
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;rstic&#39;</span>]
+</span></span></code></pre></div><h3 id="can-it-be-better">Can it be better?<a hidden class="anchor" aria-hidden="true" href="#can-it-be-better">#</a></h3>
+<p>The obvious question here is - theoretically, can this chain be longer? Well, it&rsquo;s certainly possible, but probably not by much. And the reasoning is simple:</p>
+<p>Our balancing step here is the wild-card. Min-cost flow has multiple equally optimal solutions, and <code>networkx</code> just picks one at random, instead of exploring the full theoretical solution space. One way to solve this could be to use Integer Linear Programming (ILP), which might yield better results. The min-cost flow solves degree balance and minimum removals in a truly optimal way, but it is not aware of connectivity. ILP solves all three of these, albeit NP-hard (which is fine for a graph of such few nodes as ours).</p>
+<p>Running ILP (for example through <code>gurobi</code>
+
+
+<a href="#ref-17" class="sidenote-number sidenote-number-mobile" aria-label="Reference 17"></a>
+<a href="#sn-17" class="sidenote-number sidenote-number-desktop" aria-label="Reference 17"></a>
+<span class="sidenote" id="sn-17">Again, I am in no way affiliated with them.</span>
+<span class="sidenote-reference" id="ref-17" data-ref="17">Again, I am in no way affiliated with them.</span>
+) could find an even better path - still, if such a path exists, it would only be marginally better.</p>
+<p>What I wanted to do with this post is to show off how a simple child&rsquo;s game maps to different fun graph problems (all in P!), so I won&rsquo;t be doing any ILP now.</p>
+<p>Maybe you can take a stab at it :)</p>
+<h2 id="why-do-we-even-need-this">Why do we even need this?<a hidden class="anchor" aria-hidden="true" href="#why-do-we-even-need-this">#</a></h2>
+<p>Engineering is basically optimization: You want to save time, money, resources, you name it. The problem of the longest path is, at first glance, something that is entirely against the core philosophy of engineering - would I not prefer to get from A to B in the fastest, cheapest way possible? And yes, that&rsquo;s true for many problems. However, there are concrete applications in industry - I&rsquo;d do this post a disservice if I didn&rsquo;t mention them, so here are some of my favorites:</p>
+<ul>
+<li><strong>Logistics &amp; Route Planning</strong>: The classic example from my college days is the Chinese Postman Problem - a postman needs to go through every street in a city, at least once. The Eulerian trail is the optimal solution. You can imagine that the same idea applies to waste management, road inspection, etc.</li>
+<li><strong>DNA sequencing</strong>: Assembling a genome requires reconstructing the full DNA sequence from millions of fragments (which, just like our <strong><em>Kaladont</em></strong> model, overlap with one another). These fragments are edges in a directed graph 
+
+
+<a href="#ref-18" class="sidenote-number sidenote-number-mobile" aria-label="Reference 18"></a>
+<a href="#sn-18" class="sidenote-number sidenote-number-desktop" aria-label="Reference 18"></a>
+<span class="sidenote" id="sn-18">Called the De Bruijn graph - I knew my Bioinformatics elective would pay off one day!</span>
+<span class="sidenote-reference" id="ref-18" data-ref="18">Called the De Bruijn graph - I knew my Bioinformatics elective would pay off one day!</span>
+, and finding the original sequence is basically finding the Eulerian trail.</li>
+<li><strong>Diameter signalling route testing</strong>: This one I&rsquo;ve picked up from the telco folks which I currently work with - signalling networks are complex mesh topologies, and testing every link requires covering every edge. If we want to get full testing coverage, while at the same time minimizing the number of messages we need to send, then we are basically solving the same problem as this blog post.</li>
+</ul>
+<h2 id="final-words">Final words<a hidden class="anchor" aria-hidden="true" href="#final-words">#</a></h2>
+<p>Graphs are everywhere around us, and a lot of problems can be mapped to unwrangling some kind of graph. Even a simple word game can teach us many fundamental things in graph theory, and isn&rsquo;t that just neat?</p>
+<p>And where does the longest game of <strong><em>Kaladont</em></strong> end? At <code>rstic</code>, a word ending in <code>ic</code>, the language&rsquo;s biggest sink. As it turns out, all roads really do lead to <code>ic</code>.</p>
+<aside class="addendum">
+  <div class="addendum-label">Addendum: Download the data</div>
+  <div class="addendum-body">
+    <p>If you really have nothing better to do with your life, here&rsquo;s the entire chain, for your viewing pleasure:</p>
+<a class="download-btn" href="/files/longest-kaladont-game/trail.txt" download >
+  <span class="download-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+      <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+      <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+    </svg>
+  </span>
+  <span class="download-info">
+    <span class="download-filename">trail.txt</span>
+    <span class="download-meta">230 KB</span>
+  </span>
+</a>
+  </div>
+</aside>
+
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://eteskeredzic.github.io/tags/tech/">Tech</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/graphs/">Graphs</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/graph-theory/">Graph-Theory</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/python/">Python</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/algorithms/">Algorithms</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/optimization/">Optimization</a></li>
+      <li><a href="https://eteskeredzic.github.io/tags/kaladont/">Kaladont</a></li>
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on x"
+            href="https://x.com/intent/tweet/?text=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f&amp;hashtags=tech%2cgraphs%2cgraph-theory%2cpython%2calgorithms%2coptimization%2ckaladont">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f&amp;title=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry&amp;summary=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry&amp;source=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f&title=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on whatsapp"
+            href="https://api.whatsapp.com/send?text=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry%20-%20https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on telegram"
+            href="https://telegram.me/share/url?text=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry&amp;url=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=I%20Ruined%20a%20Children%27s%20Game%20Using%20Graphs%20and%20I%20am%20Not%20Sorry&u=https%3a%2f%2feteskeredzic.github.io%2fposts%2flongest-kaladont-game%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://eteskeredzic.github.io/">Edvin Teskeredzic</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
