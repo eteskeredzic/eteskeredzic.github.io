@@ -6,8 +6,43 @@
     <description>Recent content in Tags on Edvin Teskeredzic</description>
     <generator>Hugo -- 0.166.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 23 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://eteskeredzic.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>External</title>
+      <link>https://eteskeredzic.github.io/tags/external/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/external/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mcp</title>
+      <link>https://eteskeredzic.github.io/tags/mcp/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/mcp/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Rest</title>
+      <link>https://eteskeredzic.github.io/tags/rest/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/rest/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Software Design</title>
+      <link>https://eteskeredzic.github.io/tags/software-design/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/software-design/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tech</title>
+      <link>https://eteskeredzic.github.io/tags/tech/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/tags/tech/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Algorithms</title>
       <link>https://eteskeredzic.github.io/tags/algorithms/</link>
@@ -48,13 +83,6 @@
       <link>https://eteskeredzic.github.io/tags/python/</link>
       <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
       <guid>https://eteskeredzic.github.io/tags/python/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Tech</title>
-      <link>https://eteskeredzic.github.io/tags/tech/</link>
-      <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
-      <guid>https://eteskeredzic.github.io/tags/tech/</guid>
       <description></description>
     </item>
     <item>
@@ -132,13 +160,6 @@
       <link>https://eteskeredzic.github.io/tags/devex/</link>
       <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
       <guid>https://eteskeredzic.github.io/tags/devex/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>External</title>
-      <link>https://eteskeredzic.github.io/tags/external/</link>
-      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>https://eteskeredzic.github.io/tags/external/</guid>
       <description></description>
     </item>
     <item>

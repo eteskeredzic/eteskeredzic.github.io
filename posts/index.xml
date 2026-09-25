@@ -6,8 +6,15 @@
     <description>Recent content in posts on Edvin Teskeredzic</description>
     <generator>Hugo -- 0.166.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 23 Sep 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://eteskeredzic.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>REST does the work. MCP helps agents operate it. </title>
+      <link>https://eteskeredzic.github.io/posts/rest-does-the-work-mcp-helps-agents-operate-it/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/posts/rest-does-the-work-mcp-helps-agents-operate-it/</guid>
+      <description>Based on my talk from Shift 2026. Gives a clear, telco-inspired mental model for division of ops (MCP) and delivery (REST). Written by Joanna Suau, developer educator at Infobip.</description>
+    </item>
     <item>
       <title>I Ruined a Children&#39;s Game Using Graphs and I am Not Sorry</title>
       <link>https://eteskeredzic.github.io/posts/longest-kaladont-game/</link>

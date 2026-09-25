@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Mcp on Edvin Teskeredzic</title>
+    <link>https://eteskeredzic.github.io/tags/mcp/</link>
+    <description>Recent content in Mcp on Edvin Teskeredzic</description>
+    <generator>Hugo -- 0.166.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 23 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://eteskeredzic.github.io/tags/mcp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>REST does the work. MCP helps agents operate it. </title>
+      <link>https://eteskeredzic.github.io/posts/rest-does-the-work-mcp-helps-agents-operate-it/</link>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
+      <guid>https://eteskeredzic.github.io/posts/rest-does-the-work-mcp-helps-agents-operate-it/</guid>
+      <description>Based on my talk from Shift 2026. Gives a clear, telco-inspired mental model for division of ops (MCP) and delivery (REST). Written by Joanna Suau, developer educator at Infobip.</description>
+    </item>
+  </channel>
+</rss>
